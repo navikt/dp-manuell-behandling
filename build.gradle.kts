@@ -17,7 +17,12 @@ repositories {
 }
 
 dependencies {
+    implementation(libs.rapids.and.rivers)
+    implementation(libs.dp.aktivitetslogg)
+    implementation(libs.kotlin.logging)
+
     testImplementation(kotlin("test"))
+    testImplementation(libs.mockk)
 }
 
 kotlin {
