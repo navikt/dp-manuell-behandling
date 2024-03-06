@@ -13,7 +13,7 @@ internal class ArbeidIEØS : Avklaring("Arbeid i EØS") {
             behov,
             "Trenger informasjon om arbeid i EØS",
             mapOf(
-                "InnsendtSøknadsId" to hendelse.søknadId,
+                "InnsendtSøknadsId" to mapOf("urn" to "urn:soknadid:${hendelse.søknadId}"),
             ),
         )
     }
