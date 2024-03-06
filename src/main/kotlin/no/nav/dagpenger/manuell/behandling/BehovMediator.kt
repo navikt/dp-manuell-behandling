@@ -29,6 +29,8 @@ class BehovMediator(private val rapidsConnection: RapidsConnection) {
                     .apply {
                         putAll(kontekst)
                         putAll(behovMap)
+                        // Flat ut alle kontekster rett på root i behovet. Dette er for å være kompatibel med gamle behovløsere
+                        behovMap.values.forEach { putAll(it as Map<String, Any>) }
                     }
                     .let { JsonMessage.newNeed(behovMap.keys, it) }
                     .also {
