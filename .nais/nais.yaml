@@ -6,7 +6,7 @@ metadata:
   labels:
     team: teamdagpenger
 spec:
-  image: {{ image }}
+  image: "{{image}}"
   port: 8080
   env:
     - name: KAFKA_RAPID_TOPIC
@@ -23,7 +23,7 @@ spec:
       cpu: 20m
       memory: 256Mi
   kafka:
-    enabled: true
+    pool: "{{kafka.pool}}"
   secureLogs:
     enabled: true
   prometheus:
