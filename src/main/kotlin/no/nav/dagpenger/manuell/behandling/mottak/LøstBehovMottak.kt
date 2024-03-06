@@ -45,6 +45,7 @@ internal class LøstBehovMottak(rapidsConnection: RapidsConnection, private val 
             }
         } catch (e: Exception) {
             sikkerlogg.error(e) { "Feil ved mottak av løsning. Packet=${packet.toJson()}" }
+            throw e
         }
     }
 
@@ -55,7 +56,7 @@ internal class LøstBehovMottak(rapidsConnection: RapidsConnection, private val 
 }
 
 internal class BehovMessage(private val packet: JsonMessage) {
-    private val behov = packet["@behov"].map { Behov.valueOf(it.asText()) }
+    private val behov = packet["@løsning"].fields().asSequence().map { Behov.valueOf(it.key) }.toList()
     private val meldingsreferanseId: UUID = packet["@id"].asText().let(UUID::fromString)
     private val ident: String = packet["ident"].asText()
     private val søknadId: UUID = packet["søknadId"].asUUID()
