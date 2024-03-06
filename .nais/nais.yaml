@@ -8,9 +8,11 @@ metadata:
 spec:
   image: {{ image }}
   port: 8080
-  prometheus:
-    enabled: true
-    path: /metrics
+  env:
+    - name: KAFKA_RAPID_TOPIC
+      value: teamdagpenger.rapid.v1
+    - name: KAFKA_CONSUMER_GROUP_ID
+      value: dp-manuell-behandling-v1
   replicas:
     min: 2
     max: 3
@@ -22,6 +24,9 @@ spec:
       memory: 256Mi
   secureLogs:
     enabled: true
+  prometheus:
+    enabled: true
+    path: /metrics
   observability:
     autoInstrumentation:
       enabled: true
