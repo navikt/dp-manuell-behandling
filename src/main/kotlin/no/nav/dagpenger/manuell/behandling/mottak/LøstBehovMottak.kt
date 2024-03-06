@@ -37,15 +37,20 @@ internal class LøstBehovMottak(rapidsConnection: RapidsConnection, private val 
         packet: JsonMessage,
         context: MessageContext,
     ) {
-        val hendelser = BehovMessage(packet).hendelse()
-        logger.info { "Mottok løsning på behov: ${hendelser.map { it.behov }}" }
-        hendelser.forEach { hendelse ->
-            mediator.håndter(hendelse)
+        logger.info { "Mottok løsning på behov: ${packet["@behov"].map { it.asText() }}" }
+        try {
+            val hendelser = BehovMessage(packet).hendelse()
+            hendelser.forEach { hendelse ->
+                mediator.håndter(hendelse)
+            }
+        } catch (e: Exception) {
+            sikkerlogg.error(e) { "Feil ved mottak av løsning. Packet=${packet.toJson()}" }
         }
     }
 
     companion object {
         private val logger = KotlinLogging.logger {}
+        private val sikkerlogg = KotlinLogging.logger("tjenestekall")
     }
 }
 
