@@ -1,6 +1,7 @@
 package no.nav.dagpenger.manuell.behandling.mottak
 
 import com.fasterxml.jackson.databind.JsonNode
+import mu.KotlinLogging
 import no.nav.dagpenger.manuell.behandling.Mediator
 import no.nav.dagpenger.manuell.behandling.asUUID
 import no.nav.dagpenger.manuell.behandling.avklaring.ArbeidIEØS
@@ -37,9 +38,14 @@ internal class LøstBehovMottak(rapidsConnection: RapidsConnection, private val 
         context: MessageContext,
     ) {
         val hendelser = BehovMessage(packet).hendelse()
+        logger.info { "Mottok løsning på behov: ${hendelser.map { it.behov }}" }
         hendelser.forEach { hendelse ->
             mediator.håndter(hendelse)
         }
+    }
+
+    companion object {
+        private val logger = KotlinLogging.logger {}
     }
 }
 
