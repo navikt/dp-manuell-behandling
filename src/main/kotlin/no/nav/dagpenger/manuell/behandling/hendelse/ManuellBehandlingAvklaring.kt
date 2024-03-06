@@ -14,5 +14,5 @@ internal fun ManuellBehandlingAvklaring.legacyBehov() =
     mapOf(
         "Virkningstidspunkt" to behandlingsdato.toString(),
         "søknad_uuid" to søknadId.toString(),
-        "identer" to listOf(mapOf("type" to "fnr", "historisk" to false, "id" to ident())),
+        "identer" to listOf(mapOf("type" to "folkeregisterident", "historisk" to false, "id" to ident())),
     )
