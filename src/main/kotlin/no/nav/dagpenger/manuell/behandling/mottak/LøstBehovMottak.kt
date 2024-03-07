@@ -29,7 +29,6 @@ internal class LøstBehovMottak(rapidsConnection: RapidsConnection, private val 
             validate { it.demandAllOrAny("@behov", muligeBehov) }
             validate { it.requireKey("ident", "søknadId") }
             validate { it.requireKey("@løsning") }
-            validate { it.requireValue("@final", true) }
             validate { it.interestedIn("@id", "@opprettet") }
         }.register(this)
     }
@@ -57,24 +56,24 @@ internal class LøstBehovMottak(rapidsConnection: RapidsConnection, private val 
 }
 
 internal class BehovMessage(private val packet: JsonMessage) {
-    private val behov = packet["@løsning"].fields().asSequence().map { Behov.valueOf(it.key) }.toList()
+    private val løsteBehov = packet["@løsning"].fields().asSequence().map { Behov.valueOf(it.key) }.toList()
     private val meldingsreferanseId: UUID = packet["@id"].asText().let(UUID::fromString)
     private val ident: String = packet["ident"].asText()
     private val søknadId: UUID = packet["søknadId"].asUUID()
 
-    private fun utfall(behov: Behov) =
-        when (behov) {
+    private fun utfall(løsning: Behov) =
+        when (løsning) {
             Behov.EØSArbeid -> ArbeidIEØS.Løsningstolk
             Behov.HarHattLukketSiste8Uker -> HattLukkedeSakerSiste8Uker.Løsningstolk
             Behov.HarRapportertInntektNesteMåned -> InntektNesteKalendermåned.Løsningstolk
             Behov.SykepengerSiste36Måneder -> SvangerskapsrelaterteSykepenger.Løsningstolk
             Behov.HarHattDagpengerSiste13Mnd -> MuligGjenopptak.Løsningstolk
             Behov.JobbetUtenforNorge -> JobbetUtenforNorge.Løsningstolk
-        }.tolk(packet["@løsning"][behov.name])
+        }.tolk(packet["@løsning"][løsning.name])
 
     fun hendelse() =
-        behov.map {
-            LøstBehovHendelse(it, utfall(it), meldingsreferanseId, ident, søknadId)
+        løsteBehov.map { løstBehov ->
+            LøstBehovHendelse(løstBehov, utfall(løstBehov), meldingsreferanseId, ident, søknadId)
         }
 }
 

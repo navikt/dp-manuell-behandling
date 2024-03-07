@@ -16,6 +16,7 @@ internal class ManuellBehandlingService(rapidsConnection: RapidsConnection, priv
         River(rapidsConnection).apply {
             validate { it.demandValue("@event_name", "behov") }
             validate { it.demandAllOrAny("@behov", listOf("AvklaringManuellBehandling")) }
+            validate { it.forbid("@løsning") }
             validate { it.requireKey("ident") }
             // TODO: validate { it.requireKey("Søknadsdato???") }
             validate { it.requireKey("søknadId") }

@@ -22,6 +22,7 @@ internal class ManuellBehandling(
     }
 
     fun behandle(hendelse: LøstBehovHendelse) {
+        hendelse.kontekst(this)
         avklaringer.forEach { it.behandle(hendelse) }
         if (ferdigVurdert()) {
             emitVurderingAvklart()

@@ -66,6 +66,8 @@ class MediatorTest {
         with(rapid.inspektør.message(1)) {
             assertTrue(this["@løsning"]["AvklaringManuellBehandling"].asBoolean())
         }
+
+        assertEquals(2, rapid.inspektør.size)
     }
 
     private val avklaringsBehov =
@@ -78,7 +80,7 @@ class MediatorTest {
         )
     private val eøsLøsning =
         JsonMessage.newNeed(
-            listOf(Behov.EØSArbeid.name),
+            listOf(Behov.EØSArbeid.name, Behov.HarHattLukketSiste8Uker.name),
             mapOf(
                 "ident" to ident,
                 "søknadId" to søknadId.toString(),
@@ -90,7 +92,7 @@ class MediatorTest {
         )
     private val lukkedeSakerLøsning =
         JsonMessage.newNeed(
-            listOf(Behov.HarHattLukketSiste8Uker.name),
+            listOf(Behov.EØSArbeid.name, Behov.HarHattLukketSiste8Uker.name),
             mapOf(
                 "ident" to ident,
                 "søknadId" to søknadId.toString(),
