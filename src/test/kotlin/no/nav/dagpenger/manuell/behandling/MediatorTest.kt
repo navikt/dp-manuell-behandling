@@ -19,8 +19,8 @@ class MediatorTest {
     private val rapid = TestRapid()
     private val repository =
         InMemoryVurderingRepository(
-            ArbeidIEØS(),
-            HattLukkedeSakerSiste8Uker(),
+            ArbeidIEØS,
+            HattLukkedeSakerSiste8Uker,
         )
     private val mediator =
         Mediator(

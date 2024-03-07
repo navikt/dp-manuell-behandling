@@ -5,13 +5,7 @@ import mu.KotlinLogging
 import mu.withLoggingContext
 import no.nav.dagpenger.manuell.behandling.Mediator
 import no.nav.dagpenger.manuell.behandling.asUUID
-import no.nav.dagpenger.manuell.behandling.avklaring.ArbeidIEØS
 import no.nav.dagpenger.manuell.behandling.avklaring.Behov
-import no.nav.dagpenger.manuell.behandling.avklaring.HattLukkedeSakerSiste8Uker
-import no.nav.dagpenger.manuell.behandling.avklaring.InntektNesteKalendermåned
-import no.nav.dagpenger.manuell.behandling.avklaring.JobbetUtenforNorge
-import no.nav.dagpenger.manuell.behandling.avklaring.MuligGjenopptak
-import no.nav.dagpenger.manuell.behandling.avklaring.SvangerskapsrelaterteSykepenger
 import no.nav.dagpenger.manuell.behandling.avklaring.Utfall
 import no.nav.dagpenger.manuell.behandling.hendelse.ManuellBehandlingHendelse
 import no.nav.helse.rapids_rivers.JsonMessage
@@ -71,12 +65,12 @@ internal class BehovMessage(private val packet: JsonMessage) {
 
     private fun utfall(løsning: Behov) =
         when (løsning) {
-            Behov.EØSArbeid -> ArbeidIEØS.Løsningstolk
-            Behov.HarHattLukketSiste8Uker -> HattLukkedeSakerSiste8Uker.Løsningstolk
-            Behov.HarRapportertInntektNesteMåned -> InntektNesteKalendermåned.Løsningstolk
-            Behov.SykepengerSiste36Måneder -> SvangerskapsrelaterteSykepenger.Løsningstolk
-            Behov.HarHattDagpengerSiste13Mnd -> MuligGjenopptak.Løsningstolk
-            Behov.JobbetUtenforNorge -> JobbetUtenforNorge.Løsningstolk
+            Behov.EØSArbeid -> booleanLøsningstolk
+            Behov.HarHattLukketSiste8Uker -> booleanLøsningstolk
+            Behov.HarRapportertInntektNesteMåned -> booleanLøsningstolk
+            Behov.SykepengerSiste36Måneder -> booleanLøsningstolk
+            Behov.HarHattDagpengerSiste13Mnd -> booleanLøsningstolk
+            Behov.JobbetUtenforNorge -> booleanLøsningstolk
         }.tolk(packet["@løsning"][løsning.name])
 
     fun hendelser() =

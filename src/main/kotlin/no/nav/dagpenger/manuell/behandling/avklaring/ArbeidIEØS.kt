@@ -1,31 +1,10 @@
 package no.nav.dagpenger.manuell.behandling.avklaring
 
 import no.nav.dagpenger.manuell.behandling.avklaring.Behov.EØSArbeid
-import no.nav.dagpenger.manuell.behandling.hendelse.ManuellBehandlingAvklaring
-import no.nav.dagpenger.manuell.behandling.mottak.LøstBehovHendelse
-import no.nav.dagpenger.manuell.behandling.mottak.booleanLøsningstolk
 
-internal class ArbeidIEØS : Avklaring("Arbeid i EØS") {
-    private val behov = EØSArbeid
-
-    override fun behandle(hendelse: ManuellBehandlingAvklaring) {
-        hendelse.behov(
-            behov,
-            "Trenger informasjon om arbeid i EØS",
-            mapOf(
-                "InnsendtSøknadsId" to mapOf("urn" to "urn:soknadid:${hendelse.søknadId}"),
-            ),
-        )
-    }
-
-    override fun behandle(hendelse: LøstBehovHendelse) {
-        if (hendelse.behov != behov) return
-        if (vurdert()) return
-        utfall = hendelse.utfall
-        if (utfall == Utfall.Manuell) hendelse.varsel(Behandlingsvarsler.EØS_ARBEID)
-    }
-
-    companion object {
-        internal val Løsningstolk = booleanLøsningstolk
-    }
-}
+internal val ArbeidIEØS =
+    Avklaring(
+        begrunnelse = "Arbeid i EØS",
+        behov = EØSArbeid,
+        varsel = Behandlingsvarsler.EØS_ARBEID,
+    ) { hendelse -> mapOf("InnsendtSøknadsId" to mapOf("urn" to "urn:soknadid:${hendelse.søknadId}")) }

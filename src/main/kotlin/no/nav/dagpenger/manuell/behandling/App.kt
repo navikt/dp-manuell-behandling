@@ -20,11 +20,11 @@ fun main() {
         val mediator =
             Mediator(
                 InMemoryVurderingRepository(
-                    ArbeidIEØS(),
-                    HattLukkedeSakerSiste8Uker(),
-                    InntektNesteKalendermåned(),
-                    MuligGjenopptak(),
-                    SvangerskapsrelaterteSykepenger(),
+                    ArbeidIEØS,
+                    HattLukkedeSakerSiste8Uker,
+                    InntektNesteKalendermåned,
+                    MuligGjenopptak,
+                    SvangerskapsrelaterteSykepenger,
                 ),
                 AktivitetsloggMediator(this),
                 BehovMediator(this),
