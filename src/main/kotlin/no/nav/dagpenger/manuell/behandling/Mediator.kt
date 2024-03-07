@@ -86,6 +86,6 @@ internal class Mediator(
 
     private companion object {
         val logger = KotlinLogging.logger { }
-        val sikkerlogg = KotlinLogging.logger { }
+        val sikkerlogg = KotlinLogging.logger("tjenestekall.Mediator")
     }
 }
