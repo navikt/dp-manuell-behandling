@@ -38,7 +38,6 @@ internal class LøstBehovMottak(rapidsConnection: RapidsConnection, private val 
         context: MessageContext,
     ) {
         logger.info { "Mottok løsning på behov: ${packet["@behov"].map { it.asText() }}" }
-        logger.info { packet["system_participating_services"].toPrettyString() }
         try {
             /*val hendelser = BehovMessage(packet).hendelse()
             hendelser.forEach { hendelse ->

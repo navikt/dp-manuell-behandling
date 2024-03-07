@@ -1,5 +1,6 @@
 package no.nav.dagpenger.manuell.behandling.mottak
 
+import mu.KotlinLogging
 import no.nav.dagpenger.manuell.behandling.Mediator
 import no.nav.dagpenger.manuell.behandling.asUUID
 import no.nav.dagpenger.manuell.behandling.hendelse.ManuellBehandlingAvklaring
@@ -28,8 +29,13 @@ internal class ManuellBehandlingService(rapidsConnection: RapidsConnection, priv
         packet: JsonMessage,
         context: MessageContext,
     ) {
+        logger.info { "Mottok behov for manuell behandling" }
         val hendelse = ManuellBehandlingMessage(packet).hendelse()
         mediator.håndter(hendelse)
+    }
+
+    private companion object {
+        private val logger = KotlinLogging.logger {}
     }
 }
 
