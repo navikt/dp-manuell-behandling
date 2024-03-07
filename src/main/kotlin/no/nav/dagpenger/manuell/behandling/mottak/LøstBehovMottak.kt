@@ -39,12 +39,12 @@ internal class LøstBehovMottak(rapidsConnection: RapidsConnection, private val 
         packet: JsonMessage,
         context: MessageContext,
     ) {
+        val behovMessage = BehovMessage(packet)
         withLoggingContext(
             "behovId" to packet["@behovId"].asUUID().toString(),
-            "manuellBehandlingId" to packet["manuellBehandlingId"].asUUID().toString(),
+            "manuellBehandlingId" to behovMessage.manuellBehandlingId.toString(),
         ) {
             try {
-                val behovMessage = BehovMessage(packet)
                 logger.info { "Mottok løsning på behov: ${behovMessage.løsteBehov}" }
                 val hendelser = behovMessage.hendelser()
                 hendelser.forEach { hendelse ->
@@ -67,7 +67,7 @@ internal class BehovMessage(private val packet: JsonMessage) {
     internal val løsteBehov = packet["@løsning"].fields().asSequence().map { Behov.valueOf(it.key) }.toList()
     private val meldingsreferanseId: UUID = packet["@id"].asText().let(UUID::fromString)
     private val ident: String = packet["ident"].asText()
-    private val manuellVurderingId: UUID = packet["manuellBehandlingId"].asUUID()
+    internal val manuellBehandlingId: UUID = packet["manuellBehandlingId"].asUUID()
 
     private fun utfall(løsning: Behov) =
         when (løsning) {
@@ -81,7 +81,7 @@ internal class BehovMessage(private val packet: JsonMessage) {
 
     fun hendelser() =
         løsteBehov.map { løstBehov ->
-            LøstBehovHendelse(manuellVurderingId, løstBehov, utfall(løstBehov), meldingsreferanseId, ident)
+            LøstBehovHendelse(manuellBehandlingId, løstBehov, utfall(løstBehov), meldingsreferanseId, ident)
         }
 }
 
