@@ -4,7 +4,7 @@ import no.nav.dagpenger.manuell.behandling.avklaring.Avklaring
 import java.util.UUID
 
 internal interface ManuellBehandlingObserver {
-    fun vurderingAvklart(event: ManuellBehandlingAvklart)
+    fun vurderingAvklart(manuellBehandlingAvklart: ManuellBehandlingAvklart)
 
     data class ManuellBehandlingAvklart(
         val behandlesManuelt: Boolean,
