@@ -1,6 +1,7 @@
 package no.nav.dagpenger.manuell.behandling.mottak
 
 import mu.KotlinLogging
+import mu.withLoggingContext
 import no.nav.dagpenger.manuell.behandling.Mediator
 import no.nav.dagpenger.manuell.behandling.asUUID
 import no.nav.dagpenger.manuell.behandling.hendelse.ManuellBehandlingAvklaring
@@ -29,9 +30,15 @@ internal class ManuellBehandlingService(rapidsConnection: RapidsConnection, priv
         packet: JsonMessage,
         context: MessageContext,
     ) {
-        logger.info { "Mottok behov for manuell behandling" }
-        val hendelse = ManuellBehandlingMessage(packet).hendelse()
-        mediator.håndter(hendelse)
+        val message = ManuellBehandlingMessage(packet)
+        withLoggingContext(
+            "søknadId" to message.søknadId.toString(),
+            "behovId" to packet["@behovId"].asUUID().toString(),
+        ) {
+            logger.info { "Mottok behov for manuell behandling" }
+            val hendelse = message.hendelse()
+            mediator.håndter(hendelse)
+        }
     }
 
     private companion object {
@@ -43,7 +50,7 @@ private class ManuellBehandlingMessage(private val packet: JsonMessage) {
     private val meldingsreferanseId: UUID get() = packet["@id"].asText().let(UUID::fromString)
     private val behandlingsdato: LocalDate get() = LocalDate.now() // TODO: packet["Søknadsdato"].asLocalDate()
     private val ident: String get() = packet["ident"].asText()
-    private val søknadId: UUID get() = packet["søknadId"].asUUID()
+    val søknadId: UUID get() = packet["søknadId"].asUUID()
 
     fun hendelse() = ManuellBehandlingAvklaring(behandlingsdato, meldingsreferanseId, ident, søknadId)
 }

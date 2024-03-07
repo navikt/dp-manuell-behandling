@@ -27,9 +27,9 @@ internal class ManuellBehandling(
         tilstand.behandle(hendelse)
     }
 
-    private fun ferdigVurdert() = avklaringer.all { it.vurdert() }
+    private val ferdigVurdert get() = avklaringer.all { it.vurdert() }
 
-    private fun behandlesManuelt() = avklaringer.any { it.utfall == Utfall.Manuell }
+    private val behandlesManuelt get() = avklaringer.any { it.utfall == Utfall.Manuell }
 
     fun leggTilObservatør(observatør: ManuellBehandlingObserver) {
         observatører.add(observatør)
@@ -46,6 +46,7 @@ internal class ManuellBehandling(
     private inner class IkkeVurdert : Tilstand() {
         override fun behandle(hendelse: ManuellBehandlingAvklaring) {
             hendelse.kontekst(this)
+            hendelse.info("Starter vurdering av manuell behandling")
             avklaringer.forEach { it.behandle(hendelse) }
             tilstand(VurderingPågår())
         }
@@ -54,8 +55,10 @@ internal class ManuellBehandling(
     private inner class VurderingPågår : Tilstand() {
         override fun behandle(hendelse: LøstBehovHendelse) {
             hendelse.kontekst(this)
+            hendelse.info("Behandler løst behov for ${hendelse.behov}")
             avklaringer.forEach { it.behandle(hendelse) }
-            if (ferdigVurdert()) {
+            if (ferdigVurdert) {
+                hendelse.info("Vurdering av manuell behandling er ferdig, utfall=$behandlesManuelt")
                 emitVurderingAvklart()
                 tilstand(VurderingAvklart)
             }
@@ -74,7 +77,7 @@ internal class ManuellBehandling(
 
     private fun emitVurderingAvklart() {
         observatører.forEach {
-            it.vurderingAvklart(ManuellBehandlingAvklart(behandlesManuelt(), ident, søknadId))
+            it.vurderingAvklart(ManuellBehandlingAvklart(behandlesManuelt, ident, søknadId))
         }
     }
 
