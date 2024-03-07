@@ -11,7 +11,6 @@ import no.nav.dagpenger.manuell.behandling.repository.InMemoryVurderingRepositor
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.testsupport.TestRapid
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.util.UUID
@@ -51,23 +50,18 @@ class MediatorTest {
                 this["@behov"].map { it.asText() },
             )
         }
-        val vurdering = repository.finnEllerOpprett(ident, søknadId)
-        assertFalse(vurdering.ferdigVurdert())
 
         rapid.sendTestMessage(eøsLøsning.toJson())
-        assertFalse(vurdering.ferdigVurdert())
-        assertFalse(vurdering.behandlesManuelt())
+        rapid.sendTestMessage(eøsLøsning.toJson())
+        rapid.sendTestMessage(eøsLøsning.toJson())
+        assertEquals(1, rapid.inspektør.size, "Lager ikke behov på nytt")
 
         rapid.sendTestMessage(lukkedeSakerLøsning.toJson())
-        assertTrue(vurdering.ferdigVurdert())
 
-        assertTrue(vurdering.behandlesManuelt())
-
+        assertEquals(2, rapid.inspektør.size)
         with(rapid.inspektør.message(1)) {
             assertTrue(this["@løsning"]["AvklaringManuellBehandling"].asBoolean())
         }
-
-        assertEquals(2, rapid.inspektør.size)
     }
 
     private val avklaringsBehov =
