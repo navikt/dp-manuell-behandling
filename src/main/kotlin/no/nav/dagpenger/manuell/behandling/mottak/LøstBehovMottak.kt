@@ -39,6 +39,7 @@ internal class LøstBehovMottak(rapidsConnection: RapidsConnection, private val 
     ) {
         logger.info { "Mottok løsning på behov: ${packet["@behov"].map { it.asText() }}" }
         try {
+            throw RuntimeException("Feil umiddelbart")
             val hendelser = BehovMessage(packet).hendelse()
             hendelser.forEach { hendelse ->
                 mediator.håndter(hendelse)
