@@ -2,6 +2,7 @@ package no.nav.dagpenger.manuell.behandling.mottak
 
 import com.fasterxml.jackson.databind.JsonNode
 import mu.KotlinLogging
+import mu.withLoggingContext
 import no.nav.dagpenger.manuell.behandling.Mediator
 import no.nav.dagpenger.manuell.behandling.asUUID
 import no.nav.dagpenger.manuell.behandling.avklaring.ArbeidIEØS
@@ -27,7 +28,7 @@ internal class LøstBehovMottak(rapidsConnection: RapidsConnection, private val 
         River(rapidsConnection).apply {
             validate { it.demandValue("@event_name", "behov") }
             validate { it.demandAllOrAny("@behov", muligeBehov) }
-            validate { it.requireKey("ident", "søknadId") }
+            validate { it.requireKey("ident", "søknadId", "@behovId", "manuellBehandlingId") }
             validate { it.requireKey("@løsning") }
             validate { it.rejectValue("@final", true) } // Ignorerer final behov fra behovsakkumulator
             validate { it.interestedIn("@id", "@opprettet") }
@@ -38,16 +39,21 @@ internal class LøstBehovMottak(rapidsConnection: RapidsConnection, private val 
         packet: JsonMessage,
         context: MessageContext,
     ) {
-        try {
-            val behovMessage = BehovMessage(packet)
-            logger.info { "Mottok løsning på behov: ${behovMessage.løsteBehov}" }
-            val hendelser = behovMessage.hendelser()
-            hendelser.forEach { hendelse ->
-                mediator.håndter(hendelse)
+        withLoggingContext(
+            "behovId" to packet["@behovId"].asUUID().toString(),
+            "manuellBehandlingId" to packet["manuellBehandlingId"].asUUID().toString(),
+        ) {
+            try {
+                val behovMessage = BehovMessage(packet)
+                logger.info { "Mottok løsning på behov: ${behovMessage.løsteBehov}" }
+                val hendelser = behovMessage.hendelser()
+                hendelser.forEach { hendelse ->
+                    mediator.håndter(hendelse)
+                }
+            } catch (e: Exception) {
+                sikkerlogg.error(e) { "Feil ved mottak av løsning. Packet=${packet.toJson()}" }
+                throw e
             }
-        } catch (e: Exception) {
-            sikkerlogg.error(e) { "Feil ved mottak av løsning. Packet=${packet.toJson()}" }
-            throw e
         }
     }
 

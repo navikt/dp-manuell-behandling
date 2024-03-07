@@ -12,7 +12,6 @@ import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.testsupport.TestRapid
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
@@ -38,7 +37,6 @@ class MediatorTest {
     private val søknadId = UUID.fromString("123e4567-e89b-12d3-a456-426614174000")
 
     @Test
-    @Disabled
     fun `e2e`() {
         rapid.sendTestMessage(avklaringsBehov.toJson())
 
@@ -72,6 +70,7 @@ class MediatorTest {
             mapOf(
                 "ident" to ident,
                 "søknadId" to søknadId.toString(),
+                "manuellBehandlingId" to "123e4567-e89b-12d3-a456-426614174000",
             ),
         )
     private val eøsLøsning =
@@ -80,6 +79,7 @@ class MediatorTest {
             mapOf(
                 "ident" to ident,
                 "søknadId" to søknadId.toString(),
+                "manuellBehandlingId" to "123e4567-e89b-12d3-a456-426614174000",
                 "@løsning" to
                     mapOf(
                         Behov.EØSArbeid.name to false,
@@ -92,6 +92,7 @@ class MediatorTest {
             mapOf(
                 "ident" to ident,
                 "søknadId" to søknadId.toString(),
+                "manuellBehandlingId" to "123e4567-e89b-12d3-a456-426614174000",
                 "@løsning" to
                     mapOf(
                         Behov.HarHattLukketSiste8Uker.name to true,

@@ -10,6 +10,7 @@ import no.nav.dagpenger.manuell.behandling.mottak.LøstBehovHendelse
 import java.util.UUID
 
 internal class ManuellBehandling(
+    val manuellBehandlingId: UUID,
     internal val ident: String,
     internal val søknadId: UUID,
     private val avklaringer: List<Avklaring>,
@@ -81,5 +82,13 @@ internal class ManuellBehandling(
         }
     }
 
-    override fun toSpesifikkKontekst() = SpesifikkKontekst(this.javaClass.simpleName, mapOf("ident" to ident, "søknadId" to "$søknadId"))
+    override fun toSpesifikkKontekst() =
+        SpesifikkKontekst(
+            this.javaClass.simpleName,
+            mapOf(
+                "manuellBehandlingId" to manuellBehandlingId.toString(),
+                "ident" to ident,
+                "søknadId" to "$søknadId",
+            ),
+        )
 }

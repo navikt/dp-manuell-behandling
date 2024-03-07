@@ -26,7 +26,7 @@ internal class InMemoryVurderingRepository(vararg vurderinger: Avklaring) : Vurd
         fødselsnummer: String,
         søknadId: UUID,
     ) = finn(fødselsnummer, søknadId)
-        ?: ManuellBehandling(fødselsnummer, søknadId, vurderinger).also { avklaringer.add(it) }
+        ?: ManuellBehandling(UUID.randomUUID(), fødselsnummer, søknadId, vurderinger).also { avklaringer.add(it) }
 
     override fun lagre(avklaring: ManuellBehandling) {
         // no-op
