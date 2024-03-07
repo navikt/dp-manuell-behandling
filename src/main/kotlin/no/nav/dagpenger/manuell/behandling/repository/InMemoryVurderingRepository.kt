@@ -27,8 +27,8 @@ internal class InMemoryVurderingRepository(vararg vurderinger: Avklaring) : Vurd
         fødselsnummer: String,
         søknadId: UUID,
     ) = avklaringer.find { it.ident == fødselsnummer && it.søknadId == søknadId }?.let {
-        logger.warn { "Manuell behandling for søknadId=$søknadId og ident=$fødselsnummer finnes allerede" }
-        return it
+        logger.warn { "Manuell behandling for søknadId=$søknadId og ident=$fødselsnummer finnes allerede, men lager en ny" }
+        null
     } ?: ManuellBehandling(UUID.randomUUID(), fødselsnummer, søknadId, vurderinger).also { avklaringer.add(it) }
 
     override fun finn(
