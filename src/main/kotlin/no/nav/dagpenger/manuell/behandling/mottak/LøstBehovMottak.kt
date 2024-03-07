@@ -29,6 +29,7 @@ internal class LøstBehovMottak(rapidsConnection: RapidsConnection, private val 
             validate { it.demandAllOrAny("@behov", muligeBehov) }
             validate { it.requireKey("ident", "søknadId") }
             validate { it.requireKey("@løsning") }
+            validate { it.requireValue("@final", true) }
             validate { it.interestedIn("@id", "@opprettet") }
         }.register(this)
     }
