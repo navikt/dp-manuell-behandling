@@ -1,5 +1,5 @@
 name: Build and deploy
-  
+
 on:
   push:
     branches-ignore:
@@ -21,14 +21,15 @@ jobs:
           distribution: temurin
           java-version: 21
       - uses: gradle/wrapper-validation-action@v2.1.1
-      - uses: gradle/gradle-build-action@v3
+      - uses: gradle/actions/setup-gradle@v3
         env:
           # Eksluder test dependencies
           DEPENDENCY_GRAPH_INCLUDE_CONFIGURATIONS: compileClasspath|runtimeClasspath
         with:
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
           gradle-version: wrapper
           dependency-graph: generate-and-submit
-          arguments: --configuration-cache build
+      - run: ./gradlew --configuration-cache build
 
       - name: Publish results (unit test)
         uses: EnricoMi/publish-unit-test-result-action@v2
