@@ -20,7 +20,7 @@ internal class InntektNesteKalendermåned : Avklaring("Har innrapport inntekt fo
         if (hendelse.behov != behov) return
         if (vurdert()) return
         utfall = hendelse.utfall
-        hendelse.varsel(Behandlingsvarsler.INNTEKT_NESTE_KALENDERMÅNED)
+        if (utfall == Utfall.Manuell) hendelse.varsel(Behandlingsvarsler.INNTEKT_NESTE_KALENDERMÅNED)
     }
 
     companion object {

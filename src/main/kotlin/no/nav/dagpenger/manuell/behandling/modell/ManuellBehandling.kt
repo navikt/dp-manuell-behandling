@@ -59,7 +59,7 @@ internal class ManuellBehandling(
             hendelse.info("Behandler løst behov for ${hendelse.behov}")
             avklaringer.forEach { it.behandle(hendelse) }
             if (ferdigVurdert) {
-                hendelse.info("Vurdering av manuell behandling er ferdig, utfall=$behandlesManuelt")
+                hendelse.info("Vurdering av manuell behandling er ferdig, skalBehandlesManuelt=$behandlesManuelt")
                 emitVurderingAvklart()
                 tilstand(VurderingAvklart)
             }

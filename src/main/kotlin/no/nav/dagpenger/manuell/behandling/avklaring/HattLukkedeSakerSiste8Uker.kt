@@ -20,7 +20,7 @@ internal class HattLukkedeSakerSiste8Uker : Avklaring("Hatt lukkede saker siste 
         if (hendelse.behov != behov) return
         if (vurdert()) return
         utfall = hendelse.utfall
-        hendelse.varsel(Behandlingsvarsler.LUKKEDE_SAKER_SISTE_8_UKER)
+        if (utfall == Utfall.Manuell) hendelse.varsel(Behandlingsvarsler.LUKKEDE_SAKER_SISTE_8_UKER)
     }
 
     companion object {

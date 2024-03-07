@@ -21,7 +21,7 @@ internal class JobbetUtenforNorge : Avklaring("Arbeid utenfor Norge") {
         if (hendelse.behov != behov) return
         if (vurdert()) return
         utfall = hendelse.utfall
-        hendelse.varsel(Behandlingsvarsler.EØS_ARBEID)
+        if (utfall == Utfall.Manuell) hendelse.varsel(Behandlingsvarsler.EØS_ARBEID)
     }
 
     companion object {

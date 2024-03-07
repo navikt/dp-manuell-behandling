@@ -20,7 +20,7 @@ internal class SvangerskapsrelaterteSykepenger : Avklaring("Har hatt sykepenger 
         if (hendelse.behov != behov) return
         if (vurdert()) return
         utfall = hendelse.utfall
-        hendelse.varsel(Behandlingsvarsler.SVANGERSKAPSRELATERTE_SYKEPENGER)
+        if (utfall == Utfall.Manuell) hendelse.varsel(Behandlingsvarsler.SVANGERSKAPSRELATERTE_SYKEPENGER)
     }
 
     companion object {

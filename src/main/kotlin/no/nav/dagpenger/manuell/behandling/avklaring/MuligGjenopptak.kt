@@ -20,7 +20,7 @@ internal class MuligGjenopptak : Avklaring("Mulig gjenopptak") {
         if (hendelse.behov != behov) return
         if (vurdert()) return
         utfall = hendelse.utfall
-        hendelse.varsel(Behandlingsvarsler.MULIG_GJENOPPTAK)
+        if (utfall == Utfall.Manuell) hendelse.varsel(Behandlingsvarsler.MULIG_GJENOPPTAK)
     }
 
     companion object {
