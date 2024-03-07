@@ -17,12 +17,14 @@ internal class Mediator(
     private val observatører: List<ManuellBehandlingObserver> = emptyList(),
 ) : VurderingRepository by repository {
     fun håndter(hendelse: ManuellBehandlingAvklaring) {
+        logger.info("Avklaringhendelse, søknadId=${hendelse.søknadId}")
         opprettOgBehandle(hendelse) { manuellBehandling ->
             manuellBehandling.behandle(hendelse)
         }
     }
 
     fun håndter(hendelse: LøstBehovHendelse) {
+        logger.info("Løst behov: ${hendelse.behov}")
         hentOgBehandle(hendelse) { manuellBehandling ->
             manuellBehandling.behandle(hendelse)
         }
