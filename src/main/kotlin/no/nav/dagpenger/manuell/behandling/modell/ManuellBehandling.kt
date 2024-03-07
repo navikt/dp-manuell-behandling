@@ -61,12 +61,17 @@ internal class ManuellBehandling(
             if (ferdigVurdert) {
                 hendelse.info("Vurdering av manuell behandling er ferdig, skalBehandlesManuelt=$behandlesManuelt")
                 emitVurderingAvklart()
-                tilstand(VurderingAvklart)
+                tilstand(VurderingAvklart())
             }
         }
     }
 
-    private data object VurderingAvklart : Tilstand() {
+    private inner class VurderingAvklart() : Tilstand() {
+        override fun behandle(hendelse: ManuellBehandlingAvklaring) {
+            hendelse.info("Avklaring om manuell behandling finnes allerede, publiserer løsning på nytt")
+            emitVurderingAvklart()
+        }
+
         override fun behandle(hendelse: LøstBehovHendelse) {
             hendelse.info("Vurderingen er allerede avklart, kaster løsning")
         }
