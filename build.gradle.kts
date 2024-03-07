@@ -1,4 +1,3 @@
-import com.diffplug.gradle.spotless.SpotlessExtension
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
@@ -6,7 +5,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.9.22"
-    id("com.diffplug.spotless") version "6.25.0"
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     application
 }
@@ -45,18 +44,8 @@ tasks.test {
     }
 }
 
-configure<SpotlessExtension> {
-    kotlin {
-        ktlint()
-    }
-
-    kotlinGradle {
-        ktlint()
-    }
-}
-
 tasks.withType<KotlinCompile>().configureEach {
-    dependsOn("spotlessApply")
+    dependsOn("ktlintFormat")
 }
 tasks.withType<ShadowJar> {
     mergeServiceFiles()
