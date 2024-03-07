@@ -13,7 +13,7 @@ import no.nav.dagpenger.manuell.behandling.avklaring.JobbetUtenforNorge
 import no.nav.dagpenger.manuell.behandling.avklaring.MuligGjenopptak
 import no.nav.dagpenger.manuell.behandling.avklaring.SvangerskapsrelaterteSykepenger
 import no.nav.dagpenger.manuell.behandling.avklaring.Utfall
-import no.nav.dagpenger.manuell.behandling.hendelse.SøknadHendelse
+import no.nav.dagpenger.manuell.behandling.hendelse.ManuellBehandlingHendelse
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.RapidsConnection
@@ -28,7 +28,7 @@ internal class LøstBehovMottak(rapidsConnection: RapidsConnection, private val 
         River(rapidsConnection).apply {
             validate { it.demandValue("@event_name", "behov") }
             validate { it.demandAllOrAny("@behov", muligeBehov) }
-            validate { it.requireKey("ident", "søknadId", "@behovId", "manuellBehandlingId") }
+            validate { it.requireKey("ident", "manuellBehandlingId", "@behovId") }
             validate { it.requireKey("@løsning") }
             validate { it.rejectValue("@final", true) } // Ignorerer final behov fra behovsakkumulator
             validate { it.interestedIn("@id", "@opprettet") }
@@ -67,7 +67,7 @@ internal class BehovMessage(private val packet: JsonMessage) {
     internal val løsteBehov = packet["@løsning"].fields().asSequence().map { Behov.valueOf(it.key) }.toList()
     private val meldingsreferanseId: UUID = packet["@id"].asText().let(UUID::fromString)
     private val ident: String = packet["ident"].asText()
-    private val søknadId: UUID = packet["søknadId"].asUUID()
+    private val manuellVurderingId: UUID = packet["manuellBehandlingId"].asUUID()
 
     private fun utfall(løsning: Behov) =
         when (løsning) {
@@ -81,7 +81,7 @@ internal class BehovMessage(private val packet: JsonMessage) {
 
     fun hendelser() =
         løsteBehov.map { løstBehov ->
-            LøstBehovHendelse(løstBehov, utfall(løstBehov), meldingsreferanseId, ident, søknadId)
+            LøstBehovHendelse(manuellVurderingId, løstBehov, utfall(løstBehov), meldingsreferanseId, ident)
         }
 }
 
@@ -99,9 +99,9 @@ internal val booleanLøsningstolk =
     }
 
 internal class LøstBehovHendelse(
+    manuellVurderingId: UUID,
     val behov: Behov,
     val utfall: Utfall,
     meldingsreferanseId: UUID,
     ident: String,
-    søknadId: UUID,
-) : SøknadHendelse(meldingsreferanseId, ident, søknadId)
+) : ManuellBehandlingHendelse(manuellVurderingId, meldingsreferanseId, ident)

@@ -3,6 +3,8 @@ package no.nav.dagpenger.manuell.behandling
 import mu.KotlinLogging
 import no.nav.dagpenger.aktivitetslogg.Aktivitetslogg
 import no.nav.dagpenger.manuell.behandling.hendelse.ManuellBehandlingAvklaring
+import no.nav.dagpenger.manuell.behandling.hendelse.ManuellBehandlingHendelse
+import no.nav.dagpenger.manuell.behandling.hendelse.PersonHendelse
 import no.nav.dagpenger.manuell.behandling.hendelse.SøknadHendelse
 import no.nav.dagpenger.manuell.behandling.modell.ManuellBehandling
 import no.nav.dagpenger.manuell.behandling.modell.ManuellBehandlingObserver
@@ -17,33 +19,53 @@ internal class Mediator(
     private val observatører: List<ManuellBehandlingObserver> = emptyList(),
 ) : VurderingRepository by repository {
     fun håndter(hendelse: ManuellBehandlingAvklaring) {
-        opprettOgBehandle(hendelse) { manuellBehandling ->
+        behandle(hendelse) { manuellBehandling ->
             manuellBehandling.behandle(hendelse)
         }
     }
 
     fun håndter(hendelse: LøstBehovHendelse) {
-        hentOgBehandle(hendelse) { manuellBehandling ->
+        behandle(hendelse) { manuellBehandling ->
             manuellBehandling.behandle(hendelse)
         }
     }
 
-    private fun hentOgBehandle(
-        hendelse: SøknadHendelse,
+    private fun behandle(
+        hendelse: PersonHendelse,
         håndter: (ManuellBehandling) -> Unit,
     ) {
-        if (finn(hendelse.ident(), hendelse.søknadId) == null) {
-            hendelse.info("Fant ikke behandling for hendelse")
-            return
+        when (hendelse) {
+            is ManuellBehandlingHendelse -> hentOgBehandle(hendelse, håndter)
+            is SøknadHendelse -> opprettOgBehandle(hendelse, håndter)
+            else -> throw IllegalArgumentException("Ukjent hendelse: $hendelse")
         }
-        opprettOgBehandle(hendelse, håndter)
+    }
+
+    private fun hentOgBehandle(
+        hendelse: ManuellBehandlingHendelse,
+        håndter: (ManuellBehandling) -> Unit,
+    ) {
+        val manuellBehandling = finn(hendelse.ident(), hendelse.manuellBehandlingId)
+        if (manuellBehandling == null) {
+            hendelse.info("Fant ikke behandling med id=${hendelse.manuellBehandlingId}")
+            return // Hopp over denne
+        }
+        behandle(hendelse, manuellBehandling, håndter)
     }
 
     private fun opprettOgBehandle(
         hendelse: SøknadHendelse,
         håndter: (ManuellBehandling) -> Unit,
+    ) {
+        val manuellBehandling = opprett(hendelse.ident(), hendelse.søknadId)
+        behandle(hendelse, manuellBehandling, håndter)
+    }
+
+    private fun behandle(
+        hendelse: PersonHendelse,
+        manuellBehandling: ManuellBehandling,
+        håndter: (ManuellBehandling) -> Unit,
     ) = try {
-        val manuellBehandling = finnEllerOpprett(hendelse.ident(), hendelse.søknadId)
         observatører.forEach { manuellBehandling.leggTilObservatør(it) }
         håndter(manuellBehandling)
         lagre(manuellBehandling)
@@ -60,7 +82,7 @@ internal class Mediator(
         throw e
     }
 
-    private fun ferdigstill(hendelse: SøknadHendelse) {
+    private fun ferdigstill(hendelse: PersonHendelse) {
         if (!hendelse.harAktiviteter()) return
         if (hendelse.harFunksjonelleFeilEllerVerre()) {
             logger.info("aktivitetslogg inneholder feil (se sikkerlogg)")

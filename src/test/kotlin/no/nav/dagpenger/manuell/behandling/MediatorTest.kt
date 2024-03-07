@@ -32,7 +32,6 @@ class MediatorTest {
             ManuellBehandlingService(rapid, this)
             LøstBehovMottak(rapid, this)
         }
-
     private val ident = "12345678910"
     private val søknadId = UUID.fromString("123e4567-e89b-12d3-a456-426614174000")
 
@@ -50,13 +49,14 @@ class MediatorTest {
                 this["@behov"].map { it.asText() },
             )
         }
+        val manuellBehandlingId = rapid.inspektør.field(0, "manuellBehandlingId").asUUID()
 
-        rapid.sendTestMessage(eøsLøsning.toJson())
-        rapid.sendTestMessage(eøsLøsning.toJson())
-        rapid.sendTestMessage(eøsLøsning.toJson())
+        rapid.sendTestMessage(eøsLøsning(manuellBehandlingId).toJson())
+        rapid.sendTestMessage(eøsLøsning(manuellBehandlingId).toJson())
+        rapid.sendTestMessage(eøsLøsning(manuellBehandlingId).toJson())
         assertEquals(1, rapid.inspektør.size, "Lager ikke behov på nytt")
 
-        rapid.sendTestMessage(lukkedeSakerLøsning.toJson())
+        rapid.sendTestMessage(lukkedeSakerLøsning(manuellBehandlingId).toJson())
 
         assertEquals(2, rapid.inspektør.size)
         with(rapid.inspektør.message(1)) {
@@ -70,29 +70,30 @@ class MediatorTest {
             mapOf(
                 "ident" to ident,
                 "søknadId" to søknadId.toString(),
-                "manuellBehandlingId" to "123e4567-e89b-12d3-a456-426614174000",
             ),
         )
-    private val eøsLøsning =
+
+    private fun eøsLøsning(manuellBehandlingId: UUID) =
         JsonMessage.newNeed(
             listOf(Behov.EØSArbeid.name, Behov.HarHattLukketSiste8Uker.name),
             mapOf(
                 "ident" to ident,
                 "søknadId" to søknadId.toString(),
-                "manuellBehandlingId" to "123e4567-e89b-12d3-a456-426614174000",
+                "manuellBehandlingId" to manuellBehandlingId.toString(),
                 "@løsning" to
                     mapOf(
                         Behov.EØSArbeid.name to false,
                     ),
             ),
         )
-    private val lukkedeSakerLøsning =
+
+    private fun lukkedeSakerLøsning(manuellBehandlingId: UUID) =
         JsonMessage.newNeed(
             listOf(Behov.EØSArbeid.name, Behov.HarHattLukketSiste8Uker.name),
             mapOf(
                 "ident" to ident,
                 "søknadId" to søknadId.toString(),
-                "manuellBehandlingId" to "123e4567-e89b-12d3-a456-426614174000",
+                "manuellBehandlingId" to manuellBehandlingId.toString(),
                 "@løsning" to
                     mapOf(
                         Behov.HarHattLukketSiste8Uker.name to true,

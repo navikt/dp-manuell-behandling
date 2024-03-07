@@ -5,35 +5,39 @@ import no.nav.dagpenger.manuell.behandling.modell.ManuellBehandling
 import java.util.UUID
 
 internal interface VurderingRepository {
-    fun finnEllerOpprett(
+    fun opprett(
         fødselsnummer: String,
         søknadId: UUID,
     ): ManuellBehandling
 
-    fun lagre(avklaring: ManuellBehandling)
-
     fun finn(
         ident: String,
-        søknadId: UUID,
+        manuellBehandlingId: UUID,
     ): ManuellBehandling?
+
+    fun lagre(avklaring: ManuellBehandling)
 }
 
 internal class InMemoryVurderingRepository(vararg vurderinger: Avklaring) : VurderingRepository {
     private val vurderinger = vurderinger.toList()
     private val avklaringer: MutableList<ManuellBehandling> = mutableListOf()
 
-    override fun finnEllerOpprett(
+    override fun opprett(
         fødselsnummer: String,
         søknadId: UUID,
-    ) = finn(fødselsnummer, søknadId)
-        ?: ManuellBehandling(UUID.randomUUID(), fødselsnummer, søknadId, vurderinger).also { avklaringer.add(it) }
-
-    override fun lagre(avklaring: ManuellBehandling) {
-        // no-op
+    ): ManuellBehandling {
+        require(
+            avklaringer.none { it.ident == fødselsnummer && it.søknadId == søknadId },
+        ) { "Manuell behandling for søknadId=$søknadId og ident=$fødselsnummer finnes allerede" }
+        return ManuellBehandling(UUID.randomUUID(), fødselsnummer, søknadId, vurderinger).also { avklaringer.add(it) }
     }
 
     override fun finn(
         ident: String,
-        søknadId: UUID,
-    ) = avklaringer.find { it.ident == ident && it.søknadId == søknadId }
+        manuellBehandlingId: UUID,
+    ) = avklaringer.find { it.ident == ident && it.manuellBehandlingId == manuellBehandlingId }
+
+    override fun lagre(avklaring: ManuellBehandling) {
+        // no-op
+    }
 }
