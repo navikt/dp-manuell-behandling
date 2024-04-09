@@ -59,6 +59,7 @@ internal class ManuellBehandling(
             hendelse.kontekst(this)
             hendelse.info("Behandler løst behov for ${hendelse.behov}")
             avklaringer.forEach { it.behandle(hendelse) }
+            hendelse.info("Sjekker om ${avklaringer.size} avklaringer er ferdig vurdert")
             if (ferdigVurdert) {
                 hendelse.info("Vurdering av manuell behandling er ferdig, skalBehandlesManuelt=$behandlesManuelt")
                 emitVurderingAvklart()
