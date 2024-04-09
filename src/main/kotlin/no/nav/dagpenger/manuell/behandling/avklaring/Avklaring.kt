@@ -5,6 +5,8 @@ import no.nav.dagpenger.aktivitetslogg.SpesifikkKontekst
 import no.nav.dagpenger.manuell.behandling.hendelse.ManuellBehandlingAvklaring
 import no.nav.dagpenger.manuell.behandling.mottak.LøstBehovHendelse
 
+internal typealias AvklaringFactory = () -> Avklaring
+
 internal class Avklaring(
     private val begrunnelse: String,
     private val behov: Behov,

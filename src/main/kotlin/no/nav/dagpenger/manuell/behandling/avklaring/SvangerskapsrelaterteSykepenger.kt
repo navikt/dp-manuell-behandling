@@ -2,7 +2,7 @@ package no.nav.dagpenger.manuell.behandling.avklaring
 
 import no.nav.dagpenger.manuell.behandling.hendelse.legacyBehov
 
-internal val SvangerskapsrelaterteSykepenger =
+internal val SvangerskapsrelaterteSykepenger = {
     Avklaring(
         begrunnelse = "Har hatt sykepenger som kan være svangerskapsrelatert",
         behov = Behov.SykepengerSiste36Måneder,
@@ -10,3 +10,4 @@ internal val SvangerskapsrelaterteSykepenger =
     ) { hendelse ->
         hendelse.legacyBehov()
     }
+}

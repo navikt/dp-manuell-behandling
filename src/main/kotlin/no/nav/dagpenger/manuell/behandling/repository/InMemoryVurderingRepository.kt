@@ -1,7 +1,7 @@
 package no.nav.dagpenger.manuell.behandling.repository
 
 import mu.KotlinLogging
-import no.nav.dagpenger.manuell.behandling.avklaring.Avklaring
+import no.nav.dagpenger.manuell.behandling.avklaring.AvklaringFactory
 import no.nav.dagpenger.manuell.behandling.modell.ManuellBehandling
 import java.util.UUID
 
@@ -20,15 +20,15 @@ internal interface VurderingRepository {
     fun lagre(avklaring: ManuellBehandling)
 }
 
-internal class InMemoryVurderingRepository(vararg vurderinger: Avklaring) : VurderingRepository {
+internal class InMemoryVurderingRepository(vararg vurderinger: AvklaringFactory) : VurderingRepository {
     private val vurderinger = vurderinger.toList()
-    private val avklaringer: MutableList<ManuellBehandling> = mutableListOf()
+    private val manuellBehandling: MutableList<ManuellBehandling> = mutableListOf()
 
     override fun opprett(
         fødselsnummer: String,
         søknadId: UUID,
         behandlingId: UUID,
-    ) = avklaringer.find { it.ident == fødselsnummer && it.søknadId == søknadId }?.let {
+    ) = manuellBehandling.find { it.ident == fødselsnummer && it.søknadId == søknadId }?.let {
         logger.warn { "Manuell behandling for søknadId=$søknadId og ident=$fødselsnummer finnes allerede, men lager en ny" }
         null
     } ?: ManuellBehandling(
@@ -36,13 +36,13 @@ internal class InMemoryVurderingRepository(vararg vurderinger: Avklaring) : Vurd
         fødselsnummer,
         søknadId,
         behandlingId,
-        vurderinger,
-    ).also { avklaringer.add(it) }
+        vurderinger.map { it() },
+    ).also { manuellBehandling.add(it) }
 
     override fun finn(
         ident: String,
         manuellBehandlingId: UUID,
-    ) = avklaringer.find { it.ident == ident && it.manuellBehandlingId == manuellBehandlingId }
+    ) = manuellBehandling.find { it.ident == ident && it.manuellBehandlingId == manuellBehandlingId }
 
     override fun lagre(avklaring: ManuellBehandling) {
         // no-op

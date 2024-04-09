@@ -2,7 +2,7 @@ package no.nav.dagpenger.manuell.behandling.avklaring
 
 import no.nav.dagpenger.manuell.behandling.hendelse.legacyBehov
 
-internal val InntektNesteKalendermåned =
+internal val InntektNesteKalendermåned = {
     Avklaring(
         "Har innrapport inntekt for neste måned",
         Behov.HarRapportertInntektNesteMåned,
@@ -10,3 +10,4 @@ internal val InntektNesteKalendermåned =
     ) { hendelse ->
         hendelse.legacyBehov()
     }
+}

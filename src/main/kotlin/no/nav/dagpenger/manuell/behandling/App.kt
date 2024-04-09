@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import no.nav.dagpenger.manuell.behandling.avklaring.ArbeidIEØS
 import no.nav.dagpenger.manuell.behandling.avklaring.HattLukkedeSakerSiste8Uker
 import no.nav.dagpenger.manuell.behandling.avklaring.InntektNesteKalendermåned
+import no.nav.dagpenger.manuell.behandling.avklaring.JobbetUtenforNorge
 import no.nav.dagpenger.manuell.behandling.avklaring.MuligGjenopptak
 import no.nav.dagpenger.manuell.behandling.avklaring.SvangerskapsrelaterteSykepenger
 import no.nav.dagpenger.manuell.behandling.modell.ManuellBehandlingObserverKafka
@@ -23,6 +24,7 @@ fun main() {
                     ArbeidIEØS,
                     HattLukkedeSakerSiste8Uker,
                     InntektNesteKalendermåned,
+                    JobbetUtenforNorge,
                     MuligGjenopptak,
                     SvangerskapsrelaterteSykepenger,
                 ),
