@@ -13,6 +13,7 @@ internal class ManuellBehandlingObserverKafka(private val rapidsConnection: Rapi
                 mapOf(
                     "ident" to manuellBehandlingAvklart.ident,
                     "søknadId" to manuellBehandlingAvklart.søknadId,
+                    "behandlingId" to manuellBehandlingAvklart.behandlingId,
                     "@løsning" to
                         mapOf(
                             "AvklaringManuellBehandling" to manuellBehandlingAvklart.behandlesManuelt,

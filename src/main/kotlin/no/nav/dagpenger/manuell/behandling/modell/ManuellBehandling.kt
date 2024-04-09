@@ -13,6 +13,7 @@ internal class ManuellBehandling(
     val manuellBehandlingId: UUID,
     internal val ident: String,
     internal val søknadId: UUID,
+    internal val behandlingId: UUID,
     private val avklaringer: List<Avklaring>,
 ) : Aktivitetskontekst {
     private val observatører = mutableSetOf<ManuellBehandlingObserver>()
@@ -83,7 +84,7 @@ internal class ManuellBehandling(
 
     private fun emitVurderingAvklart() {
         observatører.forEach {
-            it.vurderingAvklart(ManuellBehandlingAvklart(behandlesManuelt, ident, søknadId))
+            it.vurderingAvklart(ManuellBehandlingAvklart(behandlesManuelt, ident, søknadId, behandlingId))
         }
     }
 
@@ -94,6 +95,7 @@ internal class ManuellBehandling(
                 "manuellBehandlingId" to manuellBehandlingId.toString(),
                 "ident" to ident,
                 "søknadId" to "$søknadId",
+                "behandlingId" to "$behandlingId",
             ),
         )
 }

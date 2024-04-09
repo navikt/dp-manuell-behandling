@@ -11,6 +11,7 @@ import no.nav.dagpenger.manuell.behandling.repository.InMemoryVurderingRepositor
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.testsupport.TestRapid
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.util.UUID
@@ -34,6 +35,7 @@ class MediatorTest {
         }
     private val ident = "12345678910"
     private val søknadId = UUID.fromString("123e4567-e89b-12d3-a456-426614174000")
+    private val behandlingId = UUID.randomUUID()
 
     @Test
     fun `e2e`() {
@@ -61,6 +63,7 @@ class MediatorTest {
         assertEquals(2, rapid.inspektør.size)
         with(rapid.inspektør.message(1)) {
             assertTrue(this["@løsning"]["AvklaringManuellBehandling"].asBoolean())
+            assertNotNull(this["behandlingId"])
         }
     }
 
@@ -70,6 +73,7 @@ class MediatorTest {
             mapOf(
                 "ident" to ident,
                 "søknadId" to søknadId.toString(),
+                "behandlingId" to behandlingId.toString(),
             ),
         )
 

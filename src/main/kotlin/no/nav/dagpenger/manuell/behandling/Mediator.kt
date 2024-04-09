@@ -57,7 +57,7 @@ internal class Mediator(
         hendelse: SøknadHendelse,
         håndter: (ManuellBehandling) -> Unit,
     ) {
-        val manuellBehandling = opprett(hendelse.ident(), hendelse.søknadId)
+        val manuellBehandling = opprett(hendelse.ident(), hendelse.søknadId, hendelse.behandlingId)
         behandle(hendelse, manuellBehandling, håndter)
     }
 

@@ -6,4 +6,6 @@ internal abstract class SøknadHendelse(
     meldingsreferanseId: UUID,
     ident: String,
     val søknadId: UUID,
-) : PersonHendelse(meldingsreferanseId, ident)
+) : PersonHendelse(meldingsreferanseId, ident) {
+    abstract val behandlingId: UUID
+}

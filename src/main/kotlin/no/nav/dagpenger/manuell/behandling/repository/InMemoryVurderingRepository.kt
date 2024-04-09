@@ -9,6 +9,7 @@ internal interface VurderingRepository {
     fun opprett(
         fødselsnummer: String,
         søknadId: UUID,
+        behandlingId: UUID,
     ): ManuellBehandling
 
     fun finn(
@@ -26,10 +27,17 @@ internal class InMemoryVurderingRepository(vararg vurderinger: Avklaring) : Vurd
     override fun opprett(
         fødselsnummer: String,
         søknadId: UUID,
+        behandlingId: UUID,
     ) = avklaringer.find { it.ident == fødselsnummer && it.søknadId == søknadId }?.let {
         logger.warn { "Manuell behandling for søknadId=$søknadId og ident=$fødselsnummer finnes allerede, men lager en ny" }
         null
-    } ?: ManuellBehandling(UUID.randomUUID(), fødselsnummer, søknadId, vurderinger).also { avklaringer.add(it) }
+    } ?: ManuellBehandling(
+        UUID.randomUUID(),
+        fødselsnummer,
+        søknadId,
+        behandlingId,
+        vurderinger,
+    ).also { avklaringer.add(it) }
 
     override fun finn(
         ident: String,

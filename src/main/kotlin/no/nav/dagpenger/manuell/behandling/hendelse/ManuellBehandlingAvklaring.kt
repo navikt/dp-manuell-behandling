@@ -8,6 +8,7 @@ internal class ManuellBehandlingAvklaring(
     meldingsreferanseId: UUID,
     fødselsnummer: String,
     søknadId: UUID,
+    override val behandlingId: UUID,
 ) : SøknadHendelse(meldingsreferanseId, fødselsnummer, søknadId)
 
 internal fun ManuellBehandlingAvklaring.legacyBehov() =

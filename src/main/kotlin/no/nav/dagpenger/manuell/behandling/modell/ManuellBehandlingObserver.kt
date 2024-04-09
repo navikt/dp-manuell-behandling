@@ -10,6 +10,7 @@ internal interface ManuellBehandlingObserver {
         val behandlesManuelt: Boolean,
         val ident: String,
         val søknadId: UUID,
+        val behandlingId: UUID,
         val vurderinger: List<Avklaring> = emptyList(),
     )
 }

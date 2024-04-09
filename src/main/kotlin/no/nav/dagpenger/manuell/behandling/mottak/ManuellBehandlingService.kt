@@ -20,6 +20,7 @@ internal class ManuellBehandlingService(rapidsConnection: RapidsConnection, priv
             validate { it.demandAllOrAny("@behov", listOf("AvklaringManuellBehandling")) }
             validate { it.forbid("@løsning") }
             validate { it.requireKey("ident") }
+            validate { it.requireKey("behandlingId") }
             // TODO: validate { it.requireKey("Søknadsdato???") }
             validate { it.requireKey("søknadId") }
             validate { it.interestedIn("@id", "@opprettet", "@behovId") }
@@ -51,6 +52,7 @@ private class ManuellBehandlingMessage(private val packet: JsonMessage) {
     private val behandlingsdato: LocalDate get() = LocalDate.now() // TODO: packet["Søknadsdato"].asLocalDate()
     private val ident: String get() = packet["ident"].asText()
     val søknadId: UUID get() = packet["søknadId"].asUUID()
+    private val behandlingId: UUID get() = packet["behandlingId"].asUUID()
 
-    fun hendelse() = ManuellBehandlingAvklaring(behandlingsdato, meldingsreferanseId, ident, søknadId)
+    fun hendelse() = ManuellBehandlingAvklaring(behandlingsdato, meldingsreferanseId, ident, søknadId, behandlingId)
 }
