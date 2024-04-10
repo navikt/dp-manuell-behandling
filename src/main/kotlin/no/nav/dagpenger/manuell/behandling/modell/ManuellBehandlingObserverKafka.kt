@@ -1,6 +1,7 @@
 package no.nav.dagpenger.manuell.behandling.modell
 
 import mu.KotlinLogging
+import mu.withLoggingContext
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.RapidsConnection
 
@@ -20,8 +21,13 @@ internal class ManuellBehandlingObserverKafka(private val rapidsConnection: Rapi
                         ),
                 ),
             )
-        rapidsConnection.publish(manuellBehandlingAvklart.ident, event.toJson())
-        logger.info { "Publiser løsning for AvklaringManuellBehandling" }
+
+        withLoggingContext(
+            "behandlingId" to manuellBehandlingAvklart.behandlingId.toString(),
+        ) {
+            rapidsConnection.publish(manuellBehandlingAvklart.ident, event.toJson())
+            logger.info { "Publiser løsning for AvklaringManuellBehandling, behandlesManuelt=${manuellBehandlingAvklart.behandlesManuelt}" }
+        }
     }
 
     private companion object {
