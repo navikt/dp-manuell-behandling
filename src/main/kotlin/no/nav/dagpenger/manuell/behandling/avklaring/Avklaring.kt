@@ -9,8 +9,8 @@ internal typealias AvklaringFactory = () -> Avklaring
 
 internal class Avklaring(
     private val begrunnelse: String,
-    private val behov: Behov,
-    private val varsel: Behandlingsvarsler.Varselkode2,
+    internal val behov: Behov,
+    internal val varsel: Behandlingsvarsler.Varselkode2,
     private val behovKontekst: (hendelse: ManuellBehandlingAvklaring) -> Map<String, Any>,
 ) : Aktivitetskontekst {
     var utfall: Utfall = Utfall.IkkeVurdert
