@@ -5,7 +5,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.9.22"
-    // id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     application
 }
@@ -45,7 +45,7 @@ tasks.test {
 }
 
 tasks.withType<KotlinCompile>().configureEach {
-    // dependsOn("ktlintFormat")
+    dependsOn("ktlintFormat")
 }
 tasks.withType<ShadowJar> {
     mergeServiceFiles()

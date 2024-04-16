@@ -85,7 +85,7 @@ internal class ManuellBehandling(
 
     private fun emitVurderingAvklart() {
         observatører.forEach {
-            it.vurderingAvklart(ManuellBehandlingAvklart(behandlesManuelt, ident, søknadId, behandlingId))
+            it.vurderingAvklart(ManuellBehandlingAvklart(behandlesManuelt, ident, søknadId, behandlingId, avklaringer))
         }
     }
 
