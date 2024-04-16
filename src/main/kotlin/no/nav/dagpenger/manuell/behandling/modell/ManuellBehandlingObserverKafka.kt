@@ -17,9 +17,11 @@ internal class ManuellBehandlingObserverKafka(private val rapidsConnection: Rapi
                     "behandlingId" to manuellBehandlingAvklart.behandlingId,
                     "vurderinger" to
                         manuellBehandlingAvklart.vurderinger.map {
-                            "type" to it.behov.name
-                            "begrunnelse" to it.varsel.varseltekst
-                            "utfall" to it.utfall.name
+                            mapOf(
+                                "type" to it.behov.name,
+                                "begrunnelse" to it.varsel.varseltekst,
+                                "utfall" to it.utfall.name,
+                            )
                         },
                     "@løsning" to
                         mapOf(
