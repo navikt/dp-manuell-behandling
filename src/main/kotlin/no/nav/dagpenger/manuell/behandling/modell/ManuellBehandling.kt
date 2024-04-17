@@ -14,7 +14,7 @@ internal class ManuellBehandling(
     internal val ident: String,
     internal val søknadId: UUID,
     internal val behandlingId: UUID,
-    internal val avklaringer: List<Avklaring>,
+    val avklaringer: List<Avklaring>,
 ) : Aktivitetskontekst {
     private val observatører = mutableSetOf<ManuellBehandlingObserver>()
     private var tilstand: Tilstand = IkkeVurdert()
