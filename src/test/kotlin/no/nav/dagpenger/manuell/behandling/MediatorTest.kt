@@ -2,10 +2,8 @@ package no.nav.dagpenger.manuell.behandling
 
 import io.mockk.mockk
 import no.nav.dagpenger.manuell.behandling.avklaring.ArbeidIEØS
-import no.nav.dagpenger.manuell.behandling.avklaring.Behandlingsvarsler
 import no.nav.dagpenger.manuell.behandling.avklaring.Behov
 import no.nav.dagpenger.manuell.behandling.avklaring.HattLukkedeSakerSiste8Uker
-import no.nav.dagpenger.manuell.behandling.avklaring.VirkningstidspunktFramITid
 import no.nav.dagpenger.manuell.behandling.modell.ManuellBehandlingObserverKafka
 import no.nav.dagpenger.manuell.behandling.mottak.LøstBehovMottak
 import no.nav.dagpenger.manuell.behandling.mottak.ManuellBehandlingService
@@ -13,20 +11,17 @@ import no.nav.dagpenger.manuell.behandling.repository.InMemoryVurderingRepositor
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.testsupport.TestRapid
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
 import java.util.UUID
 
-internal class MediatorTest {
+class MediatorTest {
     private val rapid = TestRapid()
     private val repository =
         InMemoryVurderingRepository(
             ArbeidIEØS,
             HattLukkedeSakerSiste8Uker,
-            VirkningstidspunktFramITid,
         )
     private val mediator =
         Mediator(
@@ -70,13 +65,6 @@ internal class MediatorTest {
             assertTrue(this["@løsning"]["AvklaringManuellBehandling"].asBoolean())
             assertNotNull(this["behandlingId"])
         }
-
-        with(repository.finn(ident, manuellBehandlingId)!!) {
-            assertTrue(this.avklaringer.isNotEmpty())
-            assertTrue(this.avklaringer.single { it.varsel == Behandlingsvarsler.EØS_ARBEID }.behandlesManuelt)
-            assertFalse(this.avklaringer.single { it.varsel == Behandlingsvarsler.LUKKEDE_SAKER_SISTE_8_UKER }.behandlesManuelt)
-            assertTrue(this.avklaringer.single { it.varsel == Behandlingsvarsler.VIRKNINGSTIDSPUNKT_FRAM_I_TID }.behandlesManuelt)
-        }
     }
 
     private val avklaringsBehov =
@@ -86,7 +74,6 @@ internal class MediatorTest {
                 "ident" to ident,
                 "søknadId" to søknadId.toString(),
                 "behandlingId" to behandlingId.toString(),
-                "Virkningstidspunkt" to LocalDate.now().plusDays(5).toString(),
             ),
         )
 

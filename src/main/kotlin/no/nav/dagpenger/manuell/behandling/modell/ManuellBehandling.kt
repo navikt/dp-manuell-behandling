@@ -3,7 +3,7 @@ package no.nav.dagpenger.manuell.behandling.modell
 import no.nav.dagpenger.aktivitetslogg.Aktivitetskontekst
 import no.nav.dagpenger.aktivitetslogg.SpesifikkKontekst
 import no.nav.dagpenger.manuell.behandling.avklaring.Avklaring
-import no.nav.dagpenger.manuell.behandling.avklaring.Behovavklaring
+import no.nav.dagpenger.manuell.behandling.avklaring.Utfall
 import no.nav.dagpenger.manuell.behandling.hendelse.ManuellBehandlingAvklaring
 import no.nav.dagpenger.manuell.behandling.modell.ManuellBehandlingObserver.ManuellBehandlingAvklart
 import no.nav.dagpenger.manuell.behandling.mottak.LøstBehovHendelse
@@ -14,7 +14,7 @@ internal class ManuellBehandling(
     internal val ident: String,
     internal val søknadId: UUID,
     internal val behandlingId: UUID,
-    val avklaringer: List<Avklaring>,
+    private val avklaringer: List<Avklaring>,
 ) : Aktivitetskontekst {
     private val observatører = mutableSetOf<ManuellBehandlingObserver>()
     private var tilstand: Tilstand = IkkeVurdert()
@@ -29,9 +29,9 @@ internal class ManuellBehandling(
         tilstand.behandle(hendelse)
     }
 
-    private val ferdigVurdert get() = avklaringer.all { it.vurdert }
+    private val ferdigVurdert get() = avklaringer.all { it.vurdert() }
 
-    private val behandlesManuelt get() = avklaringer.any { it.behandlesManuelt }
+    private val behandlesManuelt get() = avklaringer.any { it.utfall == Utfall.Manuell }
 
     fun leggTilObservatør(observatør: ManuellBehandlingObserver) {
         observatører.add(observatør)
@@ -58,7 +58,8 @@ internal class ManuellBehandling(
         override fun behandle(hendelse: LøstBehovHendelse) {
             hendelse.kontekst(this)
             hendelse.info("Behandler løst behov for ${hendelse.behov}")
-            avklaringer.filterIsInstance<Behovavklaring>().forEach { it.behandle(hendelse) }
+            avklaringer.forEach { it.behandle(hendelse) }
+            hendelse.info("Sjekker om ${avklaringer.size} avklaringer er ferdig vurdert")
             if (ferdigVurdert) {
                 hendelse.info("Vurdering av manuell behandling er ferdig, skalBehandlesManuelt=$behandlesManuelt")
                 emitVurderingAvklart()

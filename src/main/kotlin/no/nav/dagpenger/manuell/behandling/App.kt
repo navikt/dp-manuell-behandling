@@ -7,7 +7,6 @@ import no.nav.dagpenger.manuell.behandling.avklaring.InntektNesteKalendermåned
 import no.nav.dagpenger.manuell.behandling.avklaring.JobbetUtenforNorge
 import no.nav.dagpenger.manuell.behandling.avklaring.MuligGjenopptak
 import no.nav.dagpenger.manuell.behandling.avklaring.SvangerskapsrelaterteSykepenger
-import no.nav.dagpenger.manuell.behandling.avklaring.VirkningstidspunktFramITid
 import no.nav.dagpenger.manuell.behandling.modell.ManuellBehandlingObserverKafka
 import no.nav.dagpenger.manuell.behandling.mottak.LøstBehovMottak
 import no.nav.dagpenger.manuell.behandling.mottak.ManuellBehandlingService
@@ -28,7 +27,6 @@ fun main() {
                     JobbetUtenforNorge,
                     MuligGjenopptak,
                     SvangerskapsrelaterteSykepenger,
-                    VirkningstidspunktFramITid,
                 ),
                 AktivitetsloggMediator(this),
                 BehovMediator(this),

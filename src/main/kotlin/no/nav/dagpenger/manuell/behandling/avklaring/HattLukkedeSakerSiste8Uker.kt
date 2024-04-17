@@ -3,10 +3,10 @@ package no.nav.dagpenger.manuell.behandling.avklaring
 import no.nav.dagpenger.manuell.behandling.hendelse.legacyBehov
 
 internal val HattLukkedeSakerSiste8Uker = {
-    Behovavklaring(
+    Avklaring(
         begrunnelse = "Hatt lukkede saker siste 8 uker",
-        varsel = Behandlingsvarsler.LUKKEDE_SAKER_SISTE_8_UKER,
         behov = Behov.HarHattLukketSiste8Uker,
+        varsel = Behandlingsvarsler.LUKKEDE_SAKER_SISTE_8_UKER,
     ) { hendelse ->
         hendelse.legacyBehov()
     }

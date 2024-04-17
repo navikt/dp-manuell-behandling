@@ -27,7 +27,6 @@ internal class ManuellBehandlingObserverKafka(private val rapidsConnection: Rapi
                         mapOf(
                             "AvklaringManuellBehandling" to manuellBehandlingAvklart.behandlesManuelt,
                         ),
-                    "vurderinger" to manuellBehandlingAvklart.vurderinger,
                 ),
             )
 
