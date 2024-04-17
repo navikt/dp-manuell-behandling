@@ -69,13 +69,14 @@ internal class MediatorTest {
         with(rapid.inspektør.message(1)) {
             assertTrue(this["@løsning"]["AvklaringManuellBehandling"].asBoolean())
             assertNotNull(this["behandlingId"])
-        }
 
-        with(repository.finn(ident, manuellBehandlingId)!!) {
-            assertTrue(this.avklaringer.isNotEmpty())
-            assertTrue(this.avklaringer.single { it.varsel == Behandlingsvarsler.EØS_ARBEID }.behandlesManuelt)
-            assertFalse(this.avklaringer.single { it.varsel == Behandlingsvarsler.LUKKEDE_SAKER_SISTE_8_UKER }.behandlesManuelt)
-            assertTrue(this.avklaringer.single { it.varsel == Behandlingsvarsler.VIRKNINGSTIDSPUNKT_FRAM_I_TID }.behandlesManuelt)
+            this["vurderinger"].forEach {
+                when (it["begrunnelse"].asText()) {
+                    Behandlingsvarsler.EØS_ARBEID.varseltekst -> assertTrue(it["utfall"].asBoolean())
+                    Behandlingsvarsler.LUKKEDE_SAKER_SISTE_8_UKER.varseltekst -> assertFalse(it["utfall"].asBoolean())
+                    Behandlingsvarsler.VIRKNINGSTIDSPUNKT_FRAM_I_TID.varseltekst -> assertTrue(it["utfall"].asBoolean())
+                }
+            }
         }
     }
 
