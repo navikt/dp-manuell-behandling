@@ -23,6 +23,7 @@ internal class ManuellBehandlingService(rapidsConnection: RapidsConnection, priv
             validate { it.requireKey("behandlingId") }
             // TODO: validate { it.requireKey("Søknadsdato???") }
             validate { it.requireKey("søknadId") }
+            validate { it.requireValue("@final", true) }
             validate { it.interestedIn("@id", "@opprettet", "@behovId") }
         }.register(this)
     }
