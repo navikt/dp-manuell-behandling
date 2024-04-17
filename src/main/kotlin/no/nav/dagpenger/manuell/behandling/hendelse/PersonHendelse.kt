@@ -4,11 +4,13 @@ import no.nav.dagpenger.aktivitetslogg.Aktivitetslogg
 import no.nav.dagpenger.aktivitetslogg.AktivitetsloggHendelse
 import no.nav.dagpenger.aktivitetslogg.IAktivitetslogg
 import no.nav.dagpenger.aktivitetslogg.SpesifikkKontekst
+import java.time.LocalDateTime
 import java.util.UUID
 
 internal abstract class PersonHendelse(
     private val meldingsreferanseId: UUID,
     private val ident: String,
+    val opprettet: LocalDateTime,
     private val aktivitetslogg: Aktivitetslogg = Aktivitetslogg(),
 ) : IAktivitetslogg by aktivitetslogg, AktivitetsloggHendelse {
     override fun ident() = ident

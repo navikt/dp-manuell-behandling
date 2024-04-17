@@ -1,6 +1,7 @@
 package no.nav.dagpenger.manuell.behandling.hendelse
 
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
 
 internal class ManuellBehandlingAvklaring(
@@ -9,7 +10,8 @@ internal class ManuellBehandlingAvklaring(
     fødselsnummer: String,
     søknadId: UUID,
     override val behandlingId: UUID,
-) : SøknadHendelse(meldingsreferanseId, fødselsnummer, søknadId)
+    opprettet: LocalDateTime,
+) : SøknadHendelse(meldingsreferanseId, fødselsnummer, søknadId, opprettet)
 
 internal fun ManuellBehandlingAvklaring.legacyBehov() =
     mapOf(

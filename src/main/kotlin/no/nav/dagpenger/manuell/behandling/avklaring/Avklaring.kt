@@ -3,42 +3,43 @@ package no.nav.dagpenger.manuell.behandling.avklaring
 import no.nav.dagpenger.aktivitetslogg.Aktivitetskontekst
 import no.nav.dagpenger.aktivitetslogg.SpesifikkKontekst
 import no.nav.dagpenger.manuell.behandling.hendelse.ManuellBehandlingAvklaring
-import no.nav.dagpenger.manuell.behandling.mottak.LøstBehovHendelse
+import no.nav.dagpenger.manuell.behandling.hendelse.PersonHendelse
 
 internal typealias AvklaringFactory = () -> Avklaring
 
-internal class Avklaring(
+internal abstract class Avklaring(
     private val begrunnelse: String,
     internal val behov: Behov,
-    internal val varsel: Behandlingsvarsler.Varselkode2,
+    val varsel: Behandlingsvarsler.Varselkode2,
     private val behovKontekst: (hendelse: ManuellBehandlingAvklaring) -> Map<String, Any>,
 ) : Aktivitetskontekst {
-    var utfall: Utfall = Utfall.IkkeVurdert
-        private set
+    private var utfall: Utfall = Utfall.IkkeVurdert
 
-    fun behandle(hendelse: ManuellBehandlingAvklaring) =
-        hendelse.behov(behov, "Trenger informasjon for å avklare $begrunnelse", behovKontekst(hendelse))
+    abstract fun behandle(hendelse: ManuellBehandlingAvklaring)
 
-    fun behandle(hendelse: LøstBehovHendelse) {
-        if (hendelse.behov != behov) return
-        if (vurdert()) return
-        hendelse.kontekst(this)
-        utfall = hendelse.utfall
-
-        when (utfall) {
-            Utfall.Manuell -> hendelse.varsel(varsel)
-            Utfall.Automatisk -> hendelse.info("Fant ikke grunnlag til å kreve manuell behandling på grunn av $begrunnelse")
-            Utfall.IkkeVurdert -> TODO()
-        }
+    protected fun settUtfall(
+        behandlesManuelt: Boolean,
+        hendelse: PersonHendelse,
+    ) {
+        utfall =
+            if (behandlesManuelt) {
+                hendelse.varsel(varsel)
+                Utfall.Manuell
+            } else {
+                hendelse.info("Fant ikke grunnlag til å kreve manuell behandling på grunn av $begrunnelse")
+                Utfall.Automatisk
+            }
     }
 
-    fun vurdert() = utfall != Utfall.IkkeVurdert
+    val vurdert get() = utfall != Utfall.IkkeVurdert
+
+    val behandlesManuelt get() = utfall != Utfall.Manuell
 
     override fun toSpesifikkKontekst() = SpesifikkKontekst(this::class.simpleName ?: "Avklaring")
-}
 
-internal enum class Utfall {
-    Manuell,
-    Automatisk,
-    IkkeVurdert,
+    protected enum class Utfall {
+        Manuell,
+        Automatisk,
+        IkkeVurdert,
+    }
 }

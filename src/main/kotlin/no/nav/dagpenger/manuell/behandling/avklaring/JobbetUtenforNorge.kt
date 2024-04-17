@@ -1,9 +1,9 @@
 package no.nav.dagpenger.manuell.behandling.avklaring
 
 internal val JobbetUtenforNorge = {
-    Avklaring(
+    Behovavklaring(
         "Arbeid utenfor Norge",
-        Behov.JobbetUtenforNorge,
         Behandlingsvarsler.EØS_ARBEID,
+        Behov.JobbetUtenforNorge,
     ) { hendelse -> mapOf("InnsendtSøknadsId" to mapOf("urn" to "urn:soknadid:${hendelse.søknadId}")) }
 }

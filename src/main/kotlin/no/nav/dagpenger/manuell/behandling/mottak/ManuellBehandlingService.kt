@@ -9,6 +9,8 @@ import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
+import no.nav.helse.rapids_rivers.asLocalDate
+import no.nav.helse.rapids_rivers.asLocalDateTime
 import java.time.LocalDate
 import java.util.UUID
 
@@ -21,7 +23,7 @@ internal class ManuellBehandlingService(rapidsConnection: RapidsConnection, priv
             validate { it.forbid("@løsning") }
             validate { it.requireKey("ident") }
             validate { it.requireKey("behandlingId") }
-            // TODO: validate { it.requireKey("Søknadsdato???") }
+            validate { it.requireKey("Virkningstidspunkt") }
             validate { it.requireKey("søknadId") }
             validate { it.interestedIn("@id", "@opprettet", "@behovId") }
         }.register(this)
@@ -49,10 +51,20 @@ internal class ManuellBehandlingService(rapidsConnection: RapidsConnection, priv
 
 private class ManuellBehandlingMessage(private val packet: JsonMessage) {
     private val meldingsreferanseId: UUID get() = packet["@id"].asText().let(UUID::fromString)
-    private val behandlingsdato: LocalDate get() = LocalDate.now() // TODO: packet["Søknadsdato"].asLocalDate()
+    private val behandlingsdato: LocalDate get() = packet["Virkningstidspunkt"].asLocalDate()
     private val ident: String get() = packet["ident"].asText()
     val søknadId: UUID get() = packet["søknadId"].asUUID()
     private val behandlingId: UUID get() = packet["behandlingId"].asUUID()
 
-    fun hendelse() = ManuellBehandlingAvklaring(behandlingsdato, meldingsreferanseId, ident, søknadId, behandlingId)
+    private val opprettet = packet["@opprettet"].asLocalDateTime()
+
+    fun hendelse() =
+        ManuellBehandlingAvklaring(
+            behandlingsdato,
+            meldingsreferanseId,
+            ident,
+            søknadId,
+            behandlingId,
+            opprettet,
+        )
 }

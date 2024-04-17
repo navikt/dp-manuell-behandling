@@ -18,6 +18,9 @@ object Behandlingsvarsler {
     @Suppress("ClassName")
     data object LUKKEDE_SAKER_SISTE_8_UKER : Varselkode2("Personen har lukkede saker i Arena siste 8 uker")
 
+    @Suppress("ClassName")
+    data object VIRKNINGSTIDSPUNKT_FRAM_I_TID : Varselkode2("Virkningstidspunktet ligger mer enn 2 uker fram i tid")
+
     // TODO: Midlertidlig bridge til vi får fikset aktivitetsloggen
     abstract class Varselkode2(override val varseltekst: String) : Varselkode() {
         override fun toString() = "${this::class.java.simpleName}: $varseltekst"
