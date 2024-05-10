@@ -84,6 +84,7 @@ class MediatorTest {
                 "ident" to ident,
                 "søknadId" to søknadId.toString(),
                 "behandlingId" to behandlingId.toString(),
+                "@final" to true,
             ),
         )
 
