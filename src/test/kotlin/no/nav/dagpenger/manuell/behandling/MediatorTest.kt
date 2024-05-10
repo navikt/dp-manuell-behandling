@@ -4,6 +4,7 @@ import io.mockk.mockk
 import no.nav.dagpenger.manuell.behandling.avklaring.ArbeidIEØS
 import no.nav.dagpenger.manuell.behandling.avklaring.Behov
 import no.nav.dagpenger.manuell.behandling.avklaring.HattLukkedeSakerSiste8Uker
+import no.nav.dagpenger.manuell.behandling.avklaring.Utfall
 import no.nav.dagpenger.manuell.behandling.modell.ManuellBehandlingObserverKafka
 import no.nav.dagpenger.manuell.behandling.mottak.LøstBehovMottak
 import no.nav.dagpenger.manuell.behandling.mottak.ManuellBehandlingService
@@ -64,6 +65,15 @@ class MediatorTest {
         with(rapid.inspektør.message(1)) {
             assertTrue(this["@løsning"]["AvklaringManuellBehandling"].asBoolean())
             assertNotNull(this["behandlingId"])
+            val vurderinger = requireNotNull(this["vurderinger"])
+            assertEquals(2, vurderinger.size())
+            assertEquals(
+                mapOf(
+                    Behov.EØSArbeid.name to Utfall.Automatisk.name,
+                    Behov.HarHattLukketSiste8Uker.name to Utfall.Manuell.name,
+                ),
+                vurderinger.associate { it["type"].asText() to it["utfall"].asText() },
+            )
         }
     }
 
