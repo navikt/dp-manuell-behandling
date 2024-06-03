@@ -34,7 +34,7 @@ class BehovMediator(private val rapidsConnection: RapidsConnection, private val 
                         behovMap.values.forEach { putAll(it as Map<String, Any>) }
                     }
                     .let {
-                        val brukSøknadOrkestrator = mapOf("bruk-søknad-orkestrator" to unleash.isEnabled("bruk-søknad-orkestrator"))
+                        val brukSøknadOrkestrator = mapOf("bruk-søknad-orkestrator" to unleash.isEnabled("bruk-soknad-orkestrator"))
                         JsonMessage.newNeed(behovMap.keys, it + brukSøknadOrkestrator)
                     }
                     .also {
