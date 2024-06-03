@@ -26,6 +26,10 @@ spec:
       memory: 256Mi
   kafka:
     pool: "{{kafka.pool}}"
+  accessPolicy:
+    outbound:
+      external:
+        - host: teamdagpenger-unleash-api.nav.cloud.nais.io
   secureLogs:
     enabled: true
   prometheus:
