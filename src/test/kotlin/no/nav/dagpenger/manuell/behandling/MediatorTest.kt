@@ -21,7 +21,7 @@ import java.util.UUID
 class MediatorTest {
     private val unleash =
         FakeUnleash().also {
-            it.enable("bruk-søknad-orkestrator")
+            it.enable("bruk-soknad-orkestrator")
         }
     private val rapid = TestRapid()
     private val repository =
