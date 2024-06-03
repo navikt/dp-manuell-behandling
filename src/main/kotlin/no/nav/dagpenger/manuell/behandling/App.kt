@@ -29,7 +29,7 @@ fun main() {
                     SvangerskapsrelaterteSykepenger,
                 ),
                 AktivitetsloggMediator(this),
-                BehovMediator(this),
+                BehovMediator(this, unleash),
                 listOf(ManuellBehandlingObserverKafka(this)),
             )
         LøstBehovMottak(this, mediator)

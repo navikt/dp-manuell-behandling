@@ -1,5 +1,6 @@
 package no.nav.dagpenger.manuell.behandling
 
+import io.getunleash.Unleash
 import mu.KotlinLogging
 import mu.withLoggingContext
 import no.nav.dagpenger.aktivitetslogg.Aktivitet
@@ -7,7 +8,7 @@ import no.nav.dagpenger.manuell.behandling.hendelse.PersonHendelse
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.RapidsConnection
 
-class BehovMediator(private val rapidsConnection: RapidsConnection) {
+class BehovMediator(private val rapidsConnection: RapidsConnection, private val unleash: Unleash) {
     private companion object {
         val logger = KotlinLogging.logger { }
         val sikkerlogg = KotlinLogging.logger("tjenestekall.BehovMediator")
@@ -32,7 +33,10 @@ class BehovMediator(private val rapidsConnection: RapidsConnection) {
                         // Flat ut alle kontekster rett på root i behovet. Dette er for å være kompatibel med gamle behovløsere
                         behovMap.values.forEach { putAll(it as Map<String, Any>) }
                     }
-                    .let { JsonMessage.newNeed(behovMap.keys, it) }
+                    .let {
+                        val brukSøknadOrkestrator = mapOf("bruk-søknad-orkestrator" to unleash.isEnabled("bruk-søknad-orkestrator"))
+                        JsonMessage.newNeed(behovMap.keys, it + brukSøknadOrkestrator)
+                    }
                     .also {
                         withLoggingContext("behovId" to it.id) {
                             sikkerlogg.info { "sender behov for ${behovMap.keys}:\n${it.toJson()}}" }

@@ -1,5 +1,6 @@
 package no.nav.dagpenger.manuell.behandling
 
+import io.getunleash.FakeUnleash
 import io.mockk.mockk
 import no.nav.dagpenger.manuell.behandling.avklaring.ArbeidIEØS
 import no.nav.dagpenger.manuell.behandling.avklaring.Behov
@@ -18,6 +19,10 @@ import org.junit.jupiter.api.Test
 import java.util.UUID
 
 class MediatorTest {
+    private val unleash =
+        FakeUnleash().also {
+            it.enable("bruk-søknad-orkestrator")
+        }
     private val rapid = TestRapid()
     private val repository =
         InMemoryVurderingRepository(
@@ -28,7 +33,7 @@ class MediatorTest {
         Mediator(
             repository = repository,
             aktivitetsloggMediator = mockk(relaxed = true),
-            behovMediator = BehovMediator(rapid),
+            behovMediator = BehovMediator(rapid, unleash),
             observatører = listOf(ManuellBehandlingObserverKafka(rapid)),
         ).apply {
             ManuellBehandlingService(rapid, this)
@@ -51,6 +56,7 @@ class MediatorTest {
                 ),
                 this["@behov"].map { it.asText() },
             )
+            assertTrue(this["bruk-søknad-orkestrator"].asBoolean())
         }
         val manuellBehandlingId = rapid.inspektør.field(0, "manuellBehandlingId").asUUID()
 

@@ -13,6 +13,8 @@ spec:
       value: teamdagpenger.rapid.v1
     - name: KAFKA_CONSUMER_GROUP_ID
       value: dp-manuell-behandling-v1
+  envFrom:
+    - secret: dp-manuell-behandling-unleash-api-token
   replicas:
     min: 1
     max: 1
