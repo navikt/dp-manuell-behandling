@@ -64,6 +64,8 @@ internal class ManuellBehandling(
                 hendelse.info("Vurdering av manuell behandling er ferdig, skalBehandlesManuelt=$behandlesManuelt")
                 emitVurderingAvklart()
                 tilstand(VurderingAvklart())
+            } else {
+                hendelse.info("Venter på ${avklaringer.filter { !it.vurdert() }.map { it.behov.name }} avklaringer til")
             }
         }
     }
