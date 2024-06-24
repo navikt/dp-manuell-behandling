@@ -1,6 +1,7 @@
 package no.nav.dagpenger.manuell.behandling
 
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.element
 import io.kotest.property.checkAll
@@ -33,7 +34,13 @@ internal class VurderAvklaringMottakTest {
                 testRapid.sendTestMessage(nyAvklaring(avklaringskode))
                 avklaringRepository.avklaringer.size shouldBe 1
 
-                testRapid.inspektør.size shouldBe 1
+                with(testRapid.inspektør) {
+                    size shouldBe 1
+                    this.message(0).also {
+                        it["@event_name"].asText() shouldBe "behov"
+                        it["avklaringId"] shouldNotBe null
+                    }
+                }
 
                 testRapid.reset()
             }

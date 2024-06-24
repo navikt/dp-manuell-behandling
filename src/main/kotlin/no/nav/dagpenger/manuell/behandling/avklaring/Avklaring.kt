@@ -43,7 +43,7 @@ internal class Avklaring(
         JsonMessage
             .newNeed(
                 behov = listOf(behov.name),
-                behovKontekst(manuellBehandlingAvklaring),
+                behovKontekst(manuellBehandlingAvklaring) + mapOf("avklaringId" to id.toString()),
             ).toJson()
 }
 
