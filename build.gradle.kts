@@ -27,6 +27,8 @@ dependencies {
     implementation(libs.kotlin.logging)
     implementation("io.getunleash:unleash-client-java:9.2.2")
     implementation(libs.konfig)
+    implementation("io.kotest:kotest-property:${libs.versions.kotest.get()}")
+    implementation(libs.kotest.assertions.core)
 
     testImplementation(kotlin("test"))
     testImplementation(libs.mockk)

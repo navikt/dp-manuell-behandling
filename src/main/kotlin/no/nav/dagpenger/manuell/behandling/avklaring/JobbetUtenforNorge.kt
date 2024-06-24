@@ -1,9 +1,12 @@
 package no.nav.dagpenger.manuell.behandling.avklaring
 
-internal val JobbetUtenforNorge = {
+import java.util.UUID
+
+internal val JobbetUtenforNorge = { id: UUID ->
     Avklaring(
-        "Arbeid utenfor Norge",
-        Behov.JobbetUtenforNorge,
-        Behandlingsvarsler.EØS_ARBEID,
+        id = id,
+        begrunnelse = "Arbeid utenfor Norge",
+        behov = Behov.JobbetUtenforNorge,
+        varsel = Behandlingsvarsler.EØS_ARBEID,
     ) { hendelse -> mapOf("InnsendtSøknadsId" to mapOf("urn" to "urn:soknadid:${hendelse.søknadId}")) }
 }

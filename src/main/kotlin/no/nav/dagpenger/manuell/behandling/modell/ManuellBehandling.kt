@@ -70,7 +70,7 @@ internal class ManuellBehandling(
         }
     }
 
-    private inner class VurderingAvklart() : Tilstand() {
+    private inner class VurderingAvklart : Tilstand() {
         override fun behandle(hendelse: ManuellBehandlingAvklaring) {
             hendelse.info("Avklaring om manuell behandling finnes allerede, publiserer løsning på nytt")
             emitVurderingAvklart()
