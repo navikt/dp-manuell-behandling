@@ -20,7 +20,9 @@ internal interface VurderingRepository {
     fun lagre(avklaring: ManuellBehandling)
 }
 
-internal class InMemoryVurderingRepository(vararg vurderinger: AvklaringFactory) : VurderingRepository {
+internal class InMemoryVurderingRepository(
+    vararg vurderinger: AvklaringFactory,
+) : VurderingRepository {
     private val vurderinger = vurderinger.toList()
     private val manuellBehandling: MutableList<ManuellBehandling> = mutableListOf()
 
@@ -36,7 +38,7 @@ internal class InMemoryVurderingRepository(vararg vurderinger: AvklaringFactory)
         fødselsnummer,
         søknadId,
         behandlingId,
-        vurderinger.map { it() },
+        vurderinger.map { it(UUID.randomUUID()) },
     ).also { manuellBehandling.add(it) }
 
     override fun finn(
