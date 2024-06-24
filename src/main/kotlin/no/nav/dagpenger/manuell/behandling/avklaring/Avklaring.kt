@@ -17,7 +17,6 @@ internal class Avklaring(
     private val behovKontekst: (hendelse: ManuellBehandlingAvklaring) -> Map<String, Any>,
 ) : Aktivitetskontekst {
     var utfall: Utfall = Utfall.IkkeVurdert
-        private set
 
     fun behandle(hendelse: ManuellBehandlingAvklaring) =
         hendelse.behov(behov, "Trenger informasjon for å avklare $begrunnelse", behovKontekst(hendelse))

@@ -14,19 +14,22 @@ import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 import java.util.UUID
 
-internal class LøstBehovMottak(rapidsConnection: RapidsConnection, private val mediator: Mediator) :
-    River.PacketListener {
+internal class LøstBehovMottak(
+    rapidsConnection: RapidsConnection,
+    private val mediator: Mediator,
+) : River.PacketListener {
     private val muligeBehov = Behov.entries.map { it.name }
 
     init {
-        River(rapidsConnection).apply {
-            validate { it.demandValue("@event_name", "behov") }
-            validate { it.demandAllOrAny("@behov", muligeBehov) }
-            validate { it.requireKey("ident", "manuellBehandlingId", "@behovId") }
-            validate { it.requireKey("@løsning") }
-            validate { it.rejectValue("@final", true) } // Ignorerer final behov fra behovsakkumulator
-            validate { it.interestedIn("@id", "@opprettet") }
-        }.register(this)
+        River(rapidsConnection)
+            .apply {
+                validate { it.demandValue("@event_name", "behov") }
+                validate { it.demandAllOrAny("@behov", muligeBehov) }
+                validate { it.requireKey("ident", "manuellBehandlingId", "@behovId") }
+                validate { it.requireKey("@løsning") }
+                validate { it.rejectValue("@final", true) } // Ignorerer final behov fra behovsakkumulator
+                validate { it.interestedIn("@id", "@opprettet") }
+            }.register(this)
     }
 
     override fun onPacket(
@@ -57,8 +60,15 @@ internal class LøstBehovMottak(rapidsConnection: RapidsConnection, private val 
     }
 }
 
-internal class BehovMessage(private val packet: JsonMessage) {
-    internal val løsteBehov = packet["@løsning"].fields().asSequence().map { Behov.valueOf(it.key) }.toList()
+private class BehovMessage(
+    private val packet: JsonMessage,
+) {
+    internal val løsteBehov =
+        packet["@løsning"]
+            .fields()
+            .asSequence()
+            .map { Behov.valueOf(it.key) }
+            .toList()
     private val meldingsreferanseId: UUID = packet["@id"].asText().let(UUID::fromString)
     private val ident: String = packet["ident"].asText()
     internal val manuellBehandlingId: UUID = packet["manuellBehandlingId"].asUUID()

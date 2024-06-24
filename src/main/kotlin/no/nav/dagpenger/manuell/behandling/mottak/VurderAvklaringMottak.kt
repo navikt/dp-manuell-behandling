@@ -1,7 +1,9 @@
-package no.nav.dagpenger.manuell.behandling
+package no.nav.dagpenger.manuell.behandling.mottak
 
 import mu.withLoggingContext
+import no.nav.dagpenger.manuell.behandling.asUUID
 import no.nav.dagpenger.manuell.behandling.avklaring.ArbeidIEØS
+import no.nav.dagpenger.manuell.behandling.avklaring.AvklaringBehandling
 import no.nav.dagpenger.manuell.behandling.avklaring.HattLukkedeSakerSiste8Uker
 import no.nav.dagpenger.manuell.behandling.avklaring.InntektNesteKalendermåned
 import no.nav.dagpenger.manuell.behandling.avklaring.JobbetUtenforNorge
@@ -17,7 +19,7 @@ import no.nav.helse.rapids_rivers.asLocalDateTime
 
 internal class VurderAvklaringMottak(
     rapidsconnection: RapidsConnection,
-    val avklaringRepository: AvklaringRepository,
+    private val avklaringRepository: AvklaringRepository,
 ) : River.PacketListener {
     init {
         River(rapidsconnection)
@@ -63,7 +65,14 @@ internal class VurderAvklaringMottak(
                         throw IllegalArgumentException("Ukjent avklaringkode $avklaringKode")
                     }
                 }
-            avklaringRepository.lagre(avklaring, manuellBehandlingAvklaring)
+            val avklaringBehanding =
+                AvklaringBehandling(
+                    avklaring,
+                    kode = avklaringKode,
+                    behandlingId = packet["behandlingId"].asUUID(),
+                    ident = packet["ident"].asText(),
+                )
+            avklaringRepository.lagre(avklaringBehanding, manuellBehandlingAvklaring)
         }
     }
 }

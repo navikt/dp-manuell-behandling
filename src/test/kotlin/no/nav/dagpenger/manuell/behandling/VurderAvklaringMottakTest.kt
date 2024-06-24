@@ -1,73 +1,141 @@
 package no.nav.dagpenger.manuell.behandling
 
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
-import io.kotest.property.Arb
-import io.kotest.property.arbitrary.element
+import io.kotest.property.Exhaustive
 import io.kotest.property.checkAll
+import io.kotest.property.exhaustive.boolean
+import io.kotest.property.exhaustive.collection
 import kotlinx.coroutines.runBlocking
+import no.nav.dagpenger.manuell.behandling.avklaring.Behov
+import no.nav.dagpenger.manuell.behandling.avklaring.Utfall
+import no.nav.dagpenger.manuell.behandling.mottak.InformasjonsbehovLøstMottak
+import no.nav.dagpenger.manuell.behandling.mottak.VurderAvklaringMottak
 import no.nav.dagpenger.manuell.behandling.repository.InMemoryAvklaringRepository
 import no.nav.helse.rapids_rivers.testsupport.TestRapid
+import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
+import java.util.UUID
 
 internal class VurderAvklaringMottakTest {
     private val testRapid = TestRapid()
 
-    val avklaringRepository =
+    private val avklaringRepository =
         InMemoryAvklaringRepository(testRapid).also {
             VurderAvklaringMottak(testRapid, it)
+            InformasjonsbehovLøstMottak(testRapid, it)
         }
 
     @Test
     fun `kan motta ny avklaring `() {
         val koder =
             listOf(
-                "SvangerskapsrelaterteSykepenger",
-                "ArbeidIEØS",
-                "HattLukkedeSakerSiste8Uker",
-                "MuligGjenopptak",
-                "InntektNesteKalendermåned",
-                "JobbetUtenforNorge",
+                Pair("SvangerskapsrelaterteSykepenger", Behov.SykepengerSiste36Måneder),
+                Pair("ArbeidIEØS", Behov.EØSArbeid),
+                Pair("HattLukkedeSakerSiste8Uker", Behov.HarHattLukketSiste8Uker),
+                Pair("MuligGjenopptak", Behov.HarHattDagpengerSiste13Mnd),
+                Pair("InntektNesteKalendermåned", Behov.HarRapportertInntektNesteMåned),
+                Pair("JobbetUtenforNorge", Behov.JobbetUtenforNorge),
             )
         runBlocking {
-            checkAll(Arb.element(koder)) { avklaringskode ->
-                testRapid.sendTestMessage(nyAvklaring(avklaringskode))
-                avklaringRepository.avklaringer.size shouldBe 1
+            checkAll(Exhaustive.collection(koder), Exhaustive.boolean()) { avklaringskode, utfall ->
+                val avklaringId = UUID.randomUUID()
+                testRapid.sendTestMessage(nyAvklaring(avklaringId, avklaringskode = avklaringskode.first))
 
                 with(testRapid.inspektør) {
                     size shouldBe 1
                     this.message(0).also {
                         it["@event_name"].asText() shouldBe "behov"
-                        it["avklaringId"] shouldNotBe null
+                        it["avklaringId"].asText() shouldBe avklaringId.toString()
                     }
                 }
 
+                testRapid.sendTestMessage(informasjonsbehovLøst(avklaringId, avklaringskode.second.name, utfall))
+
+                val forventetUtfall = if (utfall) Utfall.Manuell else Utfall.Automatisk
+
+                when (forventetUtfall) {
+                    Utfall.Manuell -> testRapid.inspektør.size shouldBe 1
+                    Utfall.Automatisk -> {
+                        with(testRapid.inspektør) {
+                            size shouldBe 2
+                            this.message(1).also {
+                                it["@event_name"].asText() shouldBe "AvklaringIkkeRelevant"
+                                it["avklaringId"].asText() shouldBe avklaringId.toString()
+                                it["ident"].shouldNotBeNull()
+                                it["kode"].shouldNotBeNull()
+                                it["behandlingId"].shouldNotBeNull()
+                            }
+                        }
+                    }
+
+                    Utfall.IkkeVurdert -> TODO()
+                }
                 testRapid.reset()
             }
         }
     }
 
-    private fun nyAvklaring(avklaringskode: String) =
-        // language=JSON
+    @Language("JSON")
+    private fun informasjonsbehovLøst(
+        uuid: UUID,
+        avklaringskode: String,
+        utfall: Boolean,
+    ) = """
+        {
+            "@event_name": "behov",
+            "@behovId": "353a1d0f-f82b-4ead-88d0-3340e51f24a7",
+            "@behov": [
+            "$avklaringskode"
+            ],
+            "Virkningstidspunkt": "2024-06-24",
+            "søknad_uuid": "4afce924-6cb4-4ab4-a92b-fe91e24f31bf",
+            "identer": [
+            {
+                "type": "folkeregisterident",
+                "historisk": false,
+                "id": "11109233444"
+            }
+            ],
+            "@løsning": {
+            "$avklaringskode": $utfall
+        },
+            "avklaringId": "$uuid",
+            "@id": "737172d8-2207-4458-af43-5dab8a13d192",
+            "@opprettet": "2024-06-24T12:21:56.62289",
+            "system_read_count": 0,
+            "system_participating_services": [
+            {
+                "id": "737172d8-2207-4458-af43-5dab8a13d192",
+                "time": "2024-06-24T12:21:56.622890"
+            }
+            ]
+        }
+        """.trimIndent()
+
+    private fun nyAvklaring(
+        uuid: UUID,
+        avklaringskode: String,
+    ) = // language=JSON
         """
         {
-          "@event_name": "NyAvklaring",
-          "ident": "11109233444",
-          "avklaringId": "01904942-3102-7da3-bd16-084acd959e1d",
-          "kode": "$avklaringskode",
-          "behandlingId": "01904942-2ef5-7a8c-975f-ae60bd98ea66",
-          "gjelderDato": "2024-06-24",
-          "søknadId": "4afce924-6cb4-4ab4-a92b-fe91e24f31bf",
-          "søknad_uuid": "4afce924-6cb4-4ab4-a92b-fe91e24f31bf",
-          "@id": "74a01063-4b78-4758-89d0-52d6b358b2e2",
-          "@opprettet": "2024-06-24T09:59:53.107584",
-          "system_read_count": 0,
-          "system_participating_services": [
+            "@event_name": "NyAvklaring",
+            "ident": "11109233444",
+            "avklaringId": "$uuid",
+            "kode": "$avklaringskode",
+            "behandlingId": "01904942-2ef5-7a8c-975f-ae60bd98ea66",
+            "gjelderDato": "2024-06-24",
+            "søknadId": "4afce924-6cb4-4ab4-a92b-fe91e24f31bf",
+            "søknad_uuid": "4afce924-6cb4-4ab4-a92b-fe91e24f31bf",
+            "@id": "74a01063-4b78-4758-89d0-52d6b358b2e2",
+            "@opprettet": "2024-06-24T09:59:53.107584",
+            "system_read_count": 0,
+            "system_participating_services": [
             {
-              "id": "74a01063-4b78-4758-89d0-52d6b358b2e2",
-              "time": "2024-06-24T09:59:53.107584"
+                "id": "74a01063-4b78-4758-89d0-52d6b358b2e2",
+                "time": "2024-06-24T09:59:53.107584"
             }
-          ]
+            ]
         }
         """.trimIndent()
 }
