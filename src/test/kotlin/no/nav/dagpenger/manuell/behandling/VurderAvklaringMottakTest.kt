@@ -31,7 +31,7 @@ internal class VurderAvklaringMottakTest {
         val koder =
             listOf(
                 Pair("SvangerskapsrelaterteSykepenger", Behov.SykepengerSiste36Måneder),
-                Pair("ArbeidIEØS", Behov.EØSArbeid),
+                Pair("EØSArbeid", Behov.EØSArbeid),
                 Pair("HattLukkedeSakerSiste8Uker", Behov.HarHattLukketSiste8Uker),
                 Pair("MuligGjenopptak", Behov.HarHattDagpengerSiste13Mnd),
                 Pair("InntektNesteKalendermåned", Behov.HarRapportertInntektNesteMåned),

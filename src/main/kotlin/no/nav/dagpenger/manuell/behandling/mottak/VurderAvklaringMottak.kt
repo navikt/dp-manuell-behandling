@@ -56,7 +56,7 @@ internal class VurderAvklaringMottak(
             val avklaring =
                 when (avklaringKode) {
                     "SvangerskapsrelaterteSykepenger" -> SvangerskapsrelaterteSykepenger(avklaringId)
-                    "ArbeidIEØS" -> ArbeidIEØS(avklaringId)
+                    "EØSArbeid" -> ArbeidIEØS(avklaringId)
                     "HattLukkedeSakerSiste8Uker" -> HattLukkedeSakerSiste8Uker(avklaringId)
                     "MuligGjenopptak" -> MuligGjenopptak(avklaringId)
                     "InntektNesteKalendermåned" -> InntektNesteKalendermåned(avklaringId)
