@@ -1,5 +1,6 @@
 package no.nav.dagpenger.manuell.behandling.mottak
 
+import mu.KotlinLogging
 import mu.withLoggingContext
 import no.nav.dagpenger.manuell.behandling.asUUID
 import no.nav.dagpenger.manuell.behandling.avklaring.ArbeidIEØS
@@ -61,6 +62,7 @@ internal class VurderAvklaringMottak(
                     "MuligGjenopptak" -> MuligGjenopptak(avklaringId)
                     "InntektNesteKalendermåned" -> InntektNesteKalendermåned(avklaringId)
                     "JobbetUtenforNorge" -> JobbetUtenforNorge(avklaringId)
+                    "Verneplikt" -> return // Noop - må håndteres manuelt
                     else -> {
                         throw IllegalArgumentException("Ukjent avklaringkode $avklaringKode")
                     }
@@ -74,5 +76,9 @@ internal class VurderAvklaringMottak(
                 )
             avklaringRepository.lagre(avklaringBehanding, manuellBehandlingAvklaring)
         }
+    }
+
+    private companion object {
+        private val logger = KotlinLogging.logger { }
     }
 }
