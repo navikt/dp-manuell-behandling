@@ -11,14 +11,14 @@ import java.util.UUID
 internal class InMemoryAvklaringRepository(
     private val rapidsConnection: RapidsConnection,
 ) : AvklaringRepository {
-    internal val avklaringer = mutableMapOf<UUID, AvklaringBehandling>()
+    private val avklaringer = mutableMapOf<UUID, AvklaringBehandling>()
 
     override fun lagre(
         avklaring: AvklaringBehandling,
         manuellBehandlingAvklaring: ManuellBehandlingAvklaring,
     ) {
         avklaringer[avklaring.avklaring.id] = avklaring
-        rapidsConnection.publish(avklaring.avklaring.lagInformasjonsbehov(manuellBehandlingAvklaring))
+        rapidsConnection.publish(avklaring.ident, avklaring.avklaring.lagInformasjonsbehov(manuellBehandlingAvklaring))
     }
 
     override fun løsning(
@@ -34,6 +34,7 @@ internal class InMemoryAvklaringRepository(
 
         if (utfall == Utfall.Automatisk) {
             rapidsConnection.publish(
+                avklaring.ident,
                 JsonMessage
                     .newMessage(
                         "AvklaringIkkeRelevant",
