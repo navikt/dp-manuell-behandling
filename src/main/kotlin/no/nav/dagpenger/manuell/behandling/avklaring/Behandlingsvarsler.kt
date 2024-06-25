@@ -19,7 +19,9 @@ object Behandlingsvarsler {
     data object LUKKEDE_SAKER_SISTE_8_UKER : Varselkode2("Personen har lukkede saker i Arena siste 8 uker")
 
     // TODO: Midlertidlig bridge til vi får fikset aktivitetsloggen
-    abstract class Varselkode2(override val varseltekst: String) : Varselkode() {
+    abstract class Varselkode2(
+        val varseltekst: String,
+    ) : Varselkode(varseltekst) {
         override fun toString() = "${this::class.java.simpleName}: $varseltekst"
     }
 }

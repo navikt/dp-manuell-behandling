@@ -1,8 +1,8 @@
 package no.nav.dagpenger.manuell.behandling.avklaring
 
-import no.nav.dagpenger.aktivitetslogg.Aktivitet
+import no.nav.dagpenger.aktivitetslogg.aktivitet.Behov
 
-enum class Behov : Aktivitet.Behov.Behovtype {
+enum class Behov : Behov.Behovtype {
     EØSArbeid,
     JobbetUtenforNorge,
     HarHattLukketSiste8Uker,
