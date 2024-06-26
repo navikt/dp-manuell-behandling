@@ -28,6 +28,7 @@ internal data class AvklaringBehandling(
                         mapOf(
                             "avklaringId" to avklaring.id.toString(),
                             "søknadId" to søknadId.toString(),
+                            "behandlingId" to behandlingId.toString(),
                         ),
                 )
         behov.interestedIn("@behovId")
