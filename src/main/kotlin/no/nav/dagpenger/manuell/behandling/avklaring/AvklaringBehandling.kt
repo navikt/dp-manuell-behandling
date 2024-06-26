@@ -29,6 +29,7 @@ internal data class AvklaringBehandling(
                             "avklaringId" to avklaring.id.toString(),
                             "søknadId" to søknadId.toString(),
                             "behandlingId" to behandlingId.toString(),
+                            "ident" to ident,
                         ),
                 )
         behov.interestedIn("@behovId")

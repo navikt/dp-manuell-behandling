@@ -42,7 +42,16 @@ internal class VurderAvklaringMottakTest {
                 val avklaringId = UUID.randomUUID()
                 val søknadId = UUID.randomUUID()
                 val behandlingId = UUID.randomUUID()
-                testRapid.sendTestMessage(nyAvklaring(avklaringId, avklaringskode = avklaringskode.first, søknadId, behandlingId))
+                val ident = "12345678910"
+                testRapid.sendTestMessage(
+                    nyAvklaring(
+                        avklaringId,
+                        avklaringskode = avklaringskode.first,
+                        søknadId,
+                        behandlingId,
+                        ident,
+                    ),
+                )
 
                 with(testRapid.inspektør) {
                     size shouldBe 1
@@ -51,6 +60,7 @@ internal class VurderAvklaringMottakTest {
                         it["avklaringId"].asText() shouldBe avklaringId.toString()
                         it["søknadId"].asText() shouldBe søknadId.toString()
                         it["behandlingId"].asText() shouldBe behandlingId.toString()
+                        it["ident"].asText() shouldBe ident
                     }
                 }
 
@@ -122,11 +132,12 @@ internal class VurderAvklaringMottakTest {
         avklaringskode: String,
         søknadId: UUID,
         behandlingId: UUID,
+        ident: String,
     ) = // language=JSON
         """
         {
             "@event_name": "NyAvklaring",
-            "ident": "11109233444",
+            "ident": "$ident",
             "avklaringId": "$uuid",
             "kode": "$avklaringskode",
             "behandlingId": "$behandlingId",
