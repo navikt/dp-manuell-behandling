@@ -51,5 +51,11 @@ internal data class AvklaringBehandling(
                     ),
                 ).toJson(),
         )
+        withLoggingContext(
+            "avklaringId" to avklaring.id.toString(),
+            "behandlingId" to behandlingId.toString(),
+        ) {
+            logger.info { "Publisert AvklaringIkkeRelevant for avklaring $kode" }
+        }
     }
 }
