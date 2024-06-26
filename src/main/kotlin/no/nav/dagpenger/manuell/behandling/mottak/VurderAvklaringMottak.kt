@@ -73,7 +73,9 @@ internal class VurderAvklaringMottak(
                     kode = avklaringKode,
                     behandlingId = packet["behandlingId"].asUUID(),
                     ident = packet["ident"].asText(),
+                    context = context,
                 )
+
             avklaringRepository.lagre(avklaringBehanding, manuellBehandlingAvklaring)
         }
     }

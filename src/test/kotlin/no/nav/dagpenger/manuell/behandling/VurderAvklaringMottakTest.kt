@@ -21,7 +21,7 @@ internal class VurderAvklaringMottakTest {
     private val testRapid = TestRapid()
 
     private val avklaringRepository =
-        InMemoryAvklaringRepository(testRapid).also {
+        InMemoryAvklaringRepository().also {
             VurderAvklaringMottak(testRapid, it)
             InformasjonsbehovLøstMottak(testRapid, it)
         }

@@ -40,7 +40,7 @@ fun main() {
             LøstBehovMottak(this, mediator)
             ManuellBehandlingService(this, mediator)
 
-            val repository = InMemoryAvklaringRepository(this)
+            val repository = InMemoryAvklaringRepository()
             VurderAvklaringMottak(this, repository)
             InformasjonsbehovLøstMottak(this, repository)
         }.start()

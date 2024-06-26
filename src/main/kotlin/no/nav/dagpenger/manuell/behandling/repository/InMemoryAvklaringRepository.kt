@@ -4,13 +4,9 @@ import mu.KotlinLogging
 import no.nav.dagpenger.manuell.behandling.avklaring.AvklaringBehandling
 import no.nav.dagpenger.manuell.behandling.avklaring.Utfall
 import no.nav.dagpenger.manuell.behandling.hendelse.ManuellBehandlingAvklaring
-import no.nav.helse.rapids_rivers.JsonMessage
-import no.nav.helse.rapids_rivers.RapidsConnection
 import java.util.UUID
 
-internal class InMemoryAvklaringRepository(
-    private val rapidsConnection: RapidsConnection,
-) : AvklaringRepository {
+internal class InMemoryAvklaringRepository : AvklaringRepository {
     private val avklaringer = mutableMapOf<UUID, AvklaringBehandling>()
 
     override fun lagre(
@@ -18,7 +14,7 @@ internal class InMemoryAvklaringRepository(
         manuellBehandlingAvklaring: ManuellBehandlingAvklaring,
     ) {
         avklaringer[avklaring.avklaring.id] = avklaring
-        rapidsConnection.publish(avklaring.ident, avklaring.avklaring.lagInformasjonsbehov(manuellBehandlingAvklaring))
+        avklaring.lagInformasjonsbehov(manuellBehandlingAvklaring)
     }
 
     override fun løsning(
@@ -33,19 +29,7 @@ internal class InMemoryAvklaringRepository(
         avklaring.avklaring.utfall = utfall
 
         if (utfall == Utfall.Automatisk) {
-            rapidsConnection.publish(
-                avklaring.ident,
-                JsonMessage
-                    .newMessage(
-                        "AvklaringIkkeRelevant",
-                        mutableMapOf(
-                            "avklaringId" to avklaringId.toString(),
-                            "kode" to avklaring.kode,
-                            "behandlingId" to avklaring.behandlingId.toString(),
-                            "ident" to avklaring.ident,
-                        ),
-                    ).toJson(),
-            )
+            avklaring.publiserIkkeRelevant()
         }
 
         avklaringer.remove(avklaringId)
