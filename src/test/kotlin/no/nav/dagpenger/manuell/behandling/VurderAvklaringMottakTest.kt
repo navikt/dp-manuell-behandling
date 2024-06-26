@@ -40,13 +40,15 @@ internal class VurderAvklaringMottakTest {
         runBlocking {
             checkAll(Exhaustive.collection(koder), Exhaustive.boolean()) { avklaringskode, utfall ->
                 val avklaringId = UUID.randomUUID()
-                testRapid.sendTestMessage(nyAvklaring(avklaringId, avklaringskode = avklaringskode.first))
+                val søknadId = UUID.randomUUID()
+                testRapid.sendTestMessage(nyAvklaring(avklaringId, avklaringskode = avklaringskode.first, søknadId))
 
                 with(testRapid.inspektør) {
                     size shouldBe 1
                     this.message(0).also {
                         it["@event_name"].asText() shouldBe "behov"
                         it["avklaringId"].asText() shouldBe avklaringId.toString()
+                        it["søknadId"].asText() shouldBe søknadId.toString()
                     }
                 }
 
@@ -116,6 +118,7 @@ internal class VurderAvklaringMottakTest {
     private fun nyAvklaring(
         uuid: UUID,
         avklaringskode: String,
+        søknadId: UUID,
     ) = // language=JSON
         """
         {
@@ -125,7 +128,7 @@ internal class VurderAvklaringMottakTest {
             "kode": "$avklaringskode",
             "behandlingId": "01904942-2ef5-7a8c-975f-ae60bd98ea66",
             "gjelderDato": "2024-06-24",
-            "søknadId": "4afce924-6cb4-4ab4-a92b-fe91e24f31bf",
+            "søknadId": "$søknadId",
             "søknad_uuid": "4afce924-6cb4-4ab4-a92b-fe91e24f31bf",
             "@id": "74a01063-4b78-4758-89d0-52d6b358b2e2",
             "@opprettet": "2024-06-24T09:59:53.107584",

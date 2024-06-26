@@ -73,6 +73,7 @@ internal class VurderAvklaringMottak(
                     kode = avklaringKode,
                     behandlingId = packet["behandlingId"].asUUID(),
                     ident = packet["ident"].asText(),
+                    søknadId = packet["søknadId"].asUUID(),
                     context = context,
                 )
 

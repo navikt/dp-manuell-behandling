@@ -12,6 +12,7 @@ internal data class AvklaringBehandling(
     val kode: String,
     val behandlingId: UUID,
     val ident: String,
+    val søknadId: UUID,
     val context: MessageContext,
 ) {
     companion object {
@@ -23,7 +24,11 @@ internal data class AvklaringBehandling(
             JsonMessage
                 .newNeed(
                     behov = listOf(avklaring.behov.name),
-                    avklaring.behovKontekst(manuellBehandlingAvklaring) + mapOf("avklaringId" to avklaring.id.toString()),
+                    avklaring.behovKontekst(manuellBehandlingAvklaring) +
+                        mapOf(
+                            "avklaringId" to avklaring.id.toString(),
+                            "søknadId" to søknadId.toString(),
+                        ),
                 )
         behov.interestedIn("@behovId")
         withLoggingContext(
