@@ -31,7 +31,7 @@ internal data class AvklaringBehandling(
             "avklaringId" to avklaring.id.toString(),
             "behandlingId" to behandlingId.toString(),
         ) {
-            logger.info { "Publisere behov for ${avklaring.behov.name} " }
+            logger.info { "Publisere behov for ${avklaring.behov.name} for avklaring $kode" }
             context.publish(
                 behov.toJson(),
             )
