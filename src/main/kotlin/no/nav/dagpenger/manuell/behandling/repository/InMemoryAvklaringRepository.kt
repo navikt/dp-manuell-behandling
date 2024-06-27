@@ -2,9 +2,12 @@ package no.nav.dagpenger.manuell.behandling.repository
 
 import mu.KotlinLogging
 import no.nav.dagpenger.manuell.behandling.Metrikker.avklaringTeller
+import no.nav.dagpenger.manuell.behandling.Metrikker.avklaringTidBrukt
 import no.nav.dagpenger.manuell.behandling.avklaring.AvklaringBehandling
 import no.nav.dagpenger.manuell.behandling.avklaring.Utfall
 import no.nav.dagpenger.manuell.behandling.hendelse.ManuellBehandlingAvklaring
+import java.time.Duration
+import java.time.LocalDateTime
 import java.util.UUID
 
 internal class InMemoryAvklaringRepository : AvklaringRepository {
@@ -30,13 +33,26 @@ internal class InMemoryAvklaringRepository : AvklaringRepository {
                 return
             }
         avklaring.avklaring.utfall = utfall
-        avklaringTeller.labels(avklaring.kode, utfall.name).inc()
-        logger.info { "Avklaring med id=$avklaringId, kode=${avklaring.kode} løst med utfall=$utfall" }
+
+        loggAvklaringLøsning(avklaring, utfall, avklaringId)
+
         if (utfall == Utfall.Automatisk) {
             avklaring.publiserIkkeRelevant()
         }
 
         avklaringer.remove(avklaringId)
+    }
+
+    private fun loggAvklaringLøsning(
+        avklaring: AvklaringBehandling,
+        utfall: Utfall,
+        avklaringId: UUID,
+    ) {
+        logger.info { "Avklaring med id=$avklaringId, kode=${avklaring.kode} løst med utfall=$utfall" }
+
+        avklaringTeller.labels(avklaring.kode, utfall.name).inc()
+        val tidBrukt = Duration.between(avklaring.opprettet, LocalDateTime.now())
+        avklaringTidBrukt.observe(tidBrukt.toMillis().toDouble())
     }
 
     private companion object {

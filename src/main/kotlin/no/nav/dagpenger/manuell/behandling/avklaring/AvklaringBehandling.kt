@@ -5,6 +5,7 @@ import mu.withLoggingContext
 import no.nav.dagpenger.manuell.behandling.hendelse.ManuellBehandlingAvklaring
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
+import java.time.LocalDateTime
 import java.util.UUID
 
 internal data class AvklaringBehandling(
@@ -14,6 +15,7 @@ internal data class AvklaringBehandling(
     val ident: String,
     val søknadId: UUID,
     val context: MessageContext,
+    val opprettet: LocalDateTime = LocalDateTime.now(),
 ) {
     companion object {
         private val logger = KotlinLogging.logger { }
