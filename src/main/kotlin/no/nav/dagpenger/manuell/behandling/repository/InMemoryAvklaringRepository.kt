@@ -13,8 +13,6 @@ import java.util.UUID
 internal class InMemoryAvklaringRepository : AvklaringRepository {
     private val avklaringer = mutableMapOf<UUID, AvklaringBehandling>()
 
-    private val logger = KotlinLogging.logger { }
-
     override fun lagre(
         avklaring: AvklaringBehandling,
         manuellBehandlingAvklaring: ManuellBehandlingAvklaring,
@@ -52,7 +50,7 @@ internal class InMemoryAvklaringRepository : AvklaringRepository {
 
         avklaringTeller.labels(avklaring.kode, utfall.name).inc()
         val tidBrukt = Duration.between(avklaring.opprettet, LocalDateTime.now())
-        avklaringTidBrukt.observe(tidBrukt.toMillis().toDouble())
+        avklaringTidBrukt.labels(avklaring.kode).observe(tidBrukt.toMillis().toDouble())
     }
 
     private companion object {
