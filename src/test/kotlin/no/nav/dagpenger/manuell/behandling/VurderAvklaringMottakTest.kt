@@ -97,33 +97,33 @@ internal class VurderAvklaringMottakTest {
         utfall: Boolean,
     ) = """
         {
-            "@event_name": "behov",
-            "@behovId": "353a1d0f-f82b-4ead-88d0-3340e51f24a7",
-            "@behov": [
+          "@event_name": "behov",
+          "@behovId": "353a1d0f-f82b-4ead-88d0-3340e51f24a7",
+          "@behov": [
             "$avklaringskode"
-            ],
-            "Virkningstidspunkt": "2024-06-24",
-            "søknad_uuid": "4afce924-6cb4-4ab4-a92b-fe91e24f31bf",
-            "identer": [
+          ],
+          "Virkningstidspunkt": "2024-06-24",
+          "søknad_uuid": "4afce924-6cb4-4ab4-a92b-fe91e24f31bf",
+          "identer": [
             {
-                "type": "folkeregisterident",
-                "historisk": false,
-                "id": "11109233444"
+              "type": "folkeregisterident",
+              "historisk": false,
+              "id": "11109233444"
             }
-            ],
-            "@løsning": {
-            "$avklaringskode": $utfall
-        },
-            "avklaringId": "$uuid",
-            "@id": "737172d8-2207-4458-af43-5dab8a13d192",
-            "@opprettet": "2024-06-24T12:21:56.62289",
-            "system_read_count": 0,
-            "system_participating_services": [
+          ],
+          "@løsning": {
+            "$avklaringskode": {"verdi": $utfall}
+          },
+          "avklaringId": "$uuid",
+          "@id": "737172d8-2207-4458-af43-5dab8a13d192",
+          "@opprettet": "2024-06-24T12:21:56.62289",
+          "system_read_count": 0,
+          "system_participating_services": [
             {
-                "id": "737172d8-2207-4458-af43-5dab8a13d192",
-                "time": "2024-06-24T12:21:56.622890"
+              "id": "737172d8-2207-4458-af43-5dab8a13d192",
+              "time": "2024-06-24T12:21:56.622890"
             }
-            ]
+          ]
         }
         """.trimIndent()
 

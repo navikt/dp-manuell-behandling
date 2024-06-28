@@ -96,6 +96,7 @@ internal fun interface Løsningstolk {
 // En standard tolk som funker for det mestee
 internal val booleanLøsningstolk =
     Løsningstolk { løsning ->
+        require(løsning.isBoolean) { "Forventet en boolean som løsning" }
         when (løsning.asBoolean()) {
             true -> Utfall.Manuell
             false -> Utfall.Automatisk

@@ -33,7 +33,7 @@ internal class InformasjonsbehovLøstMottak(
         context: MessageContext,
     ) {
         val avklaringId = packet["avklaringId"].asUUID()
-        val behov = packet["@behov"].map { it.asText() }
+        val behov = packet["@behov"].map { it.asText() }.map { Behov.valueOf(it) }
         withLoggingContext(
             "behovId" to packet["@behovId"].asUUID().toString(),
             "avklaringId" to avklaringId.toString(),
@@ -41,8 +41,24 @@ internal class InformasjonsbehovLøstMottak(
             try {
                 logger.info { "Mottok løsning på behov: $behov" }
                 sikkerlogg.info { "Mottok løsning på behov: $behov. Pakke: ${packet.toJson()}" }
-                behov.forEach { løsning ->
-                    avklaringRepository.løsning(avklaringId, booleanLøsningstolk.tolk(packet["@løsning"][løsning]))
+                behov.forEach { behov ->
+                    val svar =
+                        if (packet["@løsning"][behov.name].isBoolean) {
+                            packet["@løsning"][behov.name]
+                        } else {
+                            packet["@løsning"][behov.name]["verdi"]
+                        }
+                    val løsning =
+                        when (behov) {
+                            Behov.EØSArbeid -> booleanLøsningstolk.tolk(svar)
+                            Behov.HarHattDagpengerSiste13Mnd -> booleanLøsningstolk.tolk(svar)
+                            Behov.HarHattLukketSiste8Uker -> booleanLøsningstolk.tolk(svar)
+                            Behov.HarRapportertInntektNesteMåned -> booleanLøsningstolk.tolk(svar)
+                            Behov.JobbetUtenforNorge -> booleanLøsningstolk.tolk(svar)
+                            Behov.SykepengerSiste36Måneder -> booleanLøsningstolk.tolk(svar)
+                        }
+
+                    avklaringRepository.løsning(avklaringId, løsning)
                 }
             } catch (e: Exception) {
                 sikkerlogg.error(e) { "Feil ved mottak av løsning. Packet=${packet.toJson()}" }
