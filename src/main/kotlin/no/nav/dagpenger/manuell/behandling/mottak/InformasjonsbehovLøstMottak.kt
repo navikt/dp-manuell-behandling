@@ -40,6 +40,7 @@ internal class InformasjonsbehovLøstMottak(
         ) {
             try {
                 logger.info { "Mottok løsning på behov: $behov" }
+                sikkerlogg.info { "Mottok løsning på behov: $behov. Pakke: ${packet.toJson()}" }
                 behov.forEach { løsning ->
                     avklaringRepository.løsning(avklaringId, booleanLøsningstolk.tolk(packet["@løsning"][løsning]))
                 }
