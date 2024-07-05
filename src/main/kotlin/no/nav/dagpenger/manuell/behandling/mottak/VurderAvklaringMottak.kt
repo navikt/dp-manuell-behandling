@@ -62,10 +62,7 @@ internal class VurderAvklaringMottak(
                     "MuligGjenopptak" -> MuligGjenopptak(avklaringId)
                     "InntektNesteKalendermåned" -> InntektNesteKalendermåned(avklaringId)
                     "JobbetUtenforNorge" -> JobbetUtenforNorge(avklaringId)
-                    "Verneplikt" -> return // Noop - må håndteres manuelt
-                    else -> {
-                        throw IllegalArgumentException("Ukjent avklaringkode $avklaringKode")
-                    }
+                    else -> return // En avklaring som må håndteres av noen andre. En saksbehandler for eksempel
                 }
             val avklaringBehanding =
                 AvklaringBehandling(
