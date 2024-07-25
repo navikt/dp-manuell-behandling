@@ -25,7 +25,7 @@ dependencies {
     implementation(libs.rapids.and.rivers)
     implementation(libs.dp.aktivitetslogg)
     implementation(libs.kotlin.logging)
-    implementation("io.getunleash:unleash-client-java:9.2.2")
+    implementation("io.getunleash:unleash-client-java:9.2.3")
     implementation(libs.konfig)
     implementation("io.kotest:kotest-property:${libs.versions.kotest.get()}")
     implementation(libs.kotest.assertions.core)
