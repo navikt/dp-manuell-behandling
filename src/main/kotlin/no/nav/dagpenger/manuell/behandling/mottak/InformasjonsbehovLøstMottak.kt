@@ -1,9 +1,11 @@
 package no.nav.dagpenger.manuell.behandling.mottak
 
+import com.fasterxml.jackson.databind.JsonNode
 import mu.KotlinLogging
 import mu.withLoggingContext
 import no.nav.dagpenger.manuell.behandling.asUUID
 import no.nav.dagpenger.manuell.behandling.avklaring.Behov
+import no.nav.dagpenger.manuell.behandling.avklaring.Utfall
 import no.nav.dagpenger.manuell.behandling.repository.AvklaringRepository
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
@@ -72,3 +74,16 @@ internal class InformasjonsbehovLøstMottak(
         private val sikkerlogg = KotlinLogging.logger("tjenestekall")
     }
 }
+
+private fun interface Løsningstolk {
+    fun tolk(løsning: JsonNode): Utfall
+}
+
+// En standard tolk som funker for det meste
+private val booleanLøsningstolk =
+    Løsningstolk { løsning ->
+        when (løsning.asBoolean()) {
+            true -> Utfall.Manuell
+            false -> Utfall.Automatisk
+        }
+    }

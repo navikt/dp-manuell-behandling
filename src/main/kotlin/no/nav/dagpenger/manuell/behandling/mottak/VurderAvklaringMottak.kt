@@ -53,7 +53,6 @@ internal class VurderAvklaringMottak(
                     packet["søknadId"].asUUID(),
                     packet["behandlingId"].asUUID(),
                 )
-            // Do something
             val avklaring =
                 when (avklaringKode) {
                     "SvangerskapsrelaterteSykepenger" -> SvangerskapsrelaterteSykepenger(avklaringId)

@@ -2,8 +2,8 @@ package no.nav.dagpenger.manuell.behandling.avklaring
 
 import no.nav.dagpenger.aktivitetslogg.Aktivitetskontekst
 import no.nav.dagpenger.aktivitetslogg.SpesifikkKontekst
+import no.nav.dagpenger.manuell.behandling.hendelse.LøstBehovHendelse
 import no.nav.dagpenger.manuell.behandling.hendelse.ManuellBehandlingAvklaring
-import no.nav.dagpenger.manuell.behandling.mottak.LøstBehovHendelse
 import no.nav.helse.rapids_rivers.JsonMessage
 import java.util.UUID
 
