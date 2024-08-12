@@ -42,6 +42,7 @@ internal data class AvklaringBehandling(
         ) {
             logger.info { "Publisere behov for ${avklaring.behov.name} for avklaring $kode" }
             context.publish(
+                ident,
                 behov.toJson(),
             )
         }
@@ -49,6 +50,7 @@ internal data class AvklaringBehandling(
 
     fun publiserIkkeRelevant() {
         context.publish(
+            ident,
             JsonMessage
                 .newMessage(
                     "AvklaringIkkeRelevant",

@@ -73,6 +73,7 @@ internal class VurderAvklaringMottakTest {
                     Utfall.Automatisk -> {
                         with(testRapid.inspektør) {
                             size shouldBe 2
+                            this.key(1) shouldBe ident
                             this.message(1).also {
                                 it["@event_name"].asText() shouldBe "AvklaringIkkeRelevant"
                                 it["avklaringId"].asText() shouldBe avklaringId.toString()
