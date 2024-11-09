@@ -1,5 +1,6 @@
 package no.nav.dagpenger.manuell.behandling
 
+import com.github.navikt.tbd_libs.rapids_and_rivers.test_support.TestRapid
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Exhaustive
@@ -12,7 +13,6 @@ import no.nav.dagpenger.manuell.behandling.avklaring.Utfall
 import no.nav.dagpenger.manuell.behandling.mottak.InformasjonsbehovLøstMottak
 import no.nav.dagpenger.manuell.behandling.mottak.VurderAvklaringMottak
 import no.nav.dagpenger.manuell.behandling.repository.InMemoryAvklaringRepository
-import no.nav.helse.rapids_rivers.testsupport.TestRapid
 import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import java.util.UUID

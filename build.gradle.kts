@@ -29,9 +29,11 @@ dependencies {
     implementation(libs.konfig)
     implementation("io.kotest:kotest-property:${libs.versions.kotest.get()}")
     implementation(libs.kotest.assertions.core)
+    implementation(libs.prometheus.simpleclient)
 
     testImplementation(kotlin("test"))
     testImplementation(libs.mockk)
+    testImplementation(libs.rapids.and.rivers.test)
 }
 
 kotlin {

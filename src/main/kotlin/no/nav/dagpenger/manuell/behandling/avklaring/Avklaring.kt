@@ -1,10 +1,10 @@
 package no.nav.dagpenger.manuell.behandling.avklaring
 
+import com.github.navikt.tbd_libs.rapids_and_rivers.JsonMessage
 import no.nav.dagpenger.aktivitetslogg.Aktivitetskontekst
 import no.nav.dagpenger.aktivitetslogg.SpesifikkKontekst
 import no.nav.dagpenger.manuell.behandling.hendelse.LøstBehovHendelse
 import no.nav.dagpenger.manuell.behandling.hendelse.ManuellBehandlingAvklaring
-import no.nav.helse.rapids_rivers.JsonMessage
 import java.util.UUID
 
 internal typealias AvklaringFactory = (UUID) -> Avklaring
