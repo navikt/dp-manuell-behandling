@@ -25,15 +25,16 @@ dependencies {
     implementation(libs.rapids.and.rivers)
     implementation(libs.dp.aktivitetslogg)
     implementation(libs.kotlin.logging)
-    implementation("io.getunleash:unleash-client-java:9.2.4")
     implementation(libs.konfig)
-    implementation("io.kotest:kotest-property:${libs.versions.kotest.get()}")
-    implementation(libs.kotest.assertions.core)
-    implementation(libs.prometheus.simpleclient)
+
+    implementation("io.getunleash:unleash-client-java:9.2.4")
+    implementation("io.prometheus:prometheus-metrics-core:1.3.3")
 
     testImplementation(kotlin("test"))
     testImplementation(libs.mockk)
     testImplementation(libs.rapids.and.rivers.test)
+    testImplementation(libs.kotest.assertions.core)
+    testImplementation("io.kotest:kotest-property:${libs.versions.kotest.get()}")
 }
 
 kotlin {

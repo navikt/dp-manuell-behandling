@@ -48,9 +48,9 @@ internal class InMemoryAvklaringRepository : AvklaringRepository {
     ) {
         logger.info { "Avklaring med id=$avklaringId, kode=${avklaring.kode} løst med utfall=$utfall" }
 
-        avklaringTeller.labels(avklaring.kode, utfall.name).inc()
+        avklaringTeller.labelValues(avklaring.kode, utfall.name).inc()
         val tidBrukt = Duration.between(avklaring.opprettet, LocalDateTime.now())
-        avklaringTidBrukt.labels(avklaring.kode).observe(tidBrukt.toMillis().toDouble())
+        avklaringTidBrukt.labelValues(avklaring.kode).observe(tidBrukt.toMillis().toDouble())
     }
 
     private companion object {

@@ -1,18 +1,22 @@
 package no.nav.dagpenger.manuell.behandling
 
-import io.prometheus.client.Counter
-import io.prometheus.client.Histogram
+import io.prometheus.metrics.core.metrics.Counter
+import io.prometheus.metrics.core.metrics.Histogram
 
 object Metrikker {
     val avklaringTeller: Counter =
         Counter
-            .build("dp_behandling_avklaring_utfall", "Utfall for avklaringer")
+            .builder()
+            .name("dp_behandling_avklaring_utfall")
+            .help("Utfall for avklaringer")
             .labelNames("kode", "utfall")
             .register()
 
     val avklaringTidBrukt: Histogram =
         Histogram
-            .build("dp_behandling_avklaring_duration", "Tid brukt for å avklare")
+            .builder()
+            .name("dp_behandling_avklaring_duration")
+            .help("Tid brukt for å avklare")
             .labelNames("kode")
             .register()
 }
