@@ -8,6 +8,7 @@ import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.boolean
 import io.kotest.property.exhaustive.collection
 import kotlinx.coroutines.runBlocking
+import no.nav.dagpenger.manuell.behandling.Metrikker.avklaringTeller
 import no.nav.dagpenger.manuell.behandling.avklaring.Behov
 import no.nav.dagpenger.manuell.behandling.avklaring.Utfall
 import no.nav.dagpenger.manuell.behandling.mottak.InformasjonsbehovLøstMottak
@@ -87,8 +88,11 @@ internal class VurderAvklaringMottakTest {
                     Utfall.IkkeVurdert -> TODO()
                 }
                 testRapid.reset()
+                avklaringTeller.labelValues(avklaringskode.first, forventetUtfall.toString()).get() shouldBe 1.0
             }
         }
+        // avklaringer * 2 utfall
+        avklaringTeller.collect().dataPoints.size shouldBe koder.size * 2
     }
 
     @Language("JSON")

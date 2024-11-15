@@ -6,7 +6,7 @@ import io.getunleash.DefaultUnleash
 import io.getunleash.FakeUnleash
 import io.getunleash.Unleash
 import io.getunleash.util.UnleashConfig
-import no.nav.dagpenger.manuell.Configuration.properties
+import no.nav.dagpenger.manuell.behandling.Configuration.properties
 import java.net.InetAddress
 
 internal val unleash: Unleash =
@@ -14,7 +14,8 @@ internal val unleash: Unleash =
         FakeUnleash()
     } else {
         DefaultUnleash(
-            UnleashConfig.builder()
+            UnleashConfig
+                .builder()
                 .appName(properties[Key("NAIS_APP_NAME", stringType)])
                 .instanceId(runCatching { InetAddress.getLocalHost().hostName }.getOrElse { "ukjent" })
                 .unleashAPI(properties[Key("UNLEASH_SERVER_API_URL", stringType)] + "/api/")

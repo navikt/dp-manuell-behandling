@@ -1,4 +1,4 @@
-package no.nav.dagpenger.manuell
+package no.nav.dagpenger.manuell.behandling
 
 import com.natpryce.konfig.ConfigurationProperties
 import com.natpryce.konfig.EnvironmentVariables
