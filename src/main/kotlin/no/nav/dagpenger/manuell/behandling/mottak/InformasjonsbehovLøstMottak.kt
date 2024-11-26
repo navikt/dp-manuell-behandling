@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.github.navikt.tbd_libs.rapids_and_rivers.JsonMessage
 import com.github.navikt.tbd_libs.rapids_and_rivers.River
 import com.github.navikt.tbd_libs.rapids_and_rivers_api.MessageContext
+import com.github.navikt.tbd_libs.rapids_and_rivers_api.MessageMetadata
 import com.github.navikt.tbd_libs.rapids_and_rivers_api.RapidsConnection
+import io.micrometer.core.instrument.MeterRegistry
 import mu.KotlinLogging
 import mu.withLoggingContext
 import no.nav.dagpenger.manuell.behandling.asUUID
@@ -21,18 +23,24 @@ internal class InformasjonsbehovLøstMottak(
     init {
         River(rapidsConnection)
             .apply {
-                validate { it.demandValue("@event_name", "behov") }
-                validate { it.demandAllOrAny("@behov", muligeBehov) }
-                validate { it.requireKey("avklaringId", "@behovId") }
-                validate { it.requireKey("@løsning") }
-                validate { it.rejectValue("@final", true) } // Ignorerer final behov fra behovsakkumulator
-                validate { it.interestedIn("@id", "@opprettet") }
+                precondition {
+                    it.requireValue("@event_name", "behov")
+                    it.requireAllOrAny("@behov", muligeBehov)
+                }
+                validate {
+                    it.requireKey("avklaringId", "@behovId")
+                    it.requireKey("@løsning")
+                    it.forbidValue("@final", true) // Ignorerer final behov fra behovsakkumulator
+                    it.interestedIn("@id", "@opprettet")
+                }
             }.register(this)
     }
 
     override fun onPacket(
         packet: JsonMessage,
         context: MessageContext,
+        metadata: MessageMetadata,
+        meterRegistry: MeterRegistry,
     ) {
         val avklaringId = packet["avklaringId"].asUUID()
         val behov = packet["@behov"].map { it.asText() }.map { Behov.valueOf(it) }
