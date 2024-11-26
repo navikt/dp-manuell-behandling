@@ -4,7 +4,9 @@ import com.github.navikt.tbd_libs.rapids_and_rivers.JsonMessage
 import com.github.navikt.tbd_libs.rapids_and_rivers.River
 import com.github.navikt.tbd_libs.rapids_and_rivers.asLocalDateTime
 import com.github.navikt.tbd_libs.rapids_and_rivers_api.MessageContext
+import com.github.navikt.tbd_libs.rapids_and_rivers_api.MessageMetadata
 import com.github.navikt.tbd_libs.rapids_and_rivers_api.RapidsConnection
+import io.micrometer.core.instrument.MeterRegistry
 import mu.KotlinLogging
 import mu.withLoggingContext
 import no.nav.dagpenger.manuell.behandling.asUUID
@@ -25,16 +27,22 @@ internal class VurderAvklaringMottak(
     init {
         River(rapidsconnection)
             .apply {
-                validate { it.demandValue("@event_name", "NyAvklaring") }
-                validate { it.requireKey("@id", "@opprettet") }
-                validate { it.requireKey("avklaringId", "kode") }
-                validate { it.requireKey("ident", "behandlingId", "søknadId") }
+                precondition {
+                    validate { it.requireValue("@event_name", "NyAvklaring") }
+                }
+                validate {
+                    it.requireKey("@id", "@opprettet")
+                    it.requireKey("avklaringId", "kode")
+                    it.requireKey("ident", "behandlingId", "søknadId")
+                }
             }.register(this)
     }
 
     override fun onPacket(
         packet: JsonMessage,
         context: MessageContext,
+        metadata: MessageMetadata,
+        meterRegistry: MeterRegistry,
     ) {
         val avklaringKode = packet["kode"].asText()
         val avklaringId = packet["avklaringId"].asUUID()
