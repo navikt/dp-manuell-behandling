@@ -141,7 +141,7 @@ internal class VurderAvklaringMottakTest {
     ) = // language=JSON
         """
         {
-            "@event_name": "NyAvklaring",
+            "@event_name": "NyAvklarng",
             "ident": "$ident",
             "avklaringId": "$uuid",
             "kode": "$avklaringskode",

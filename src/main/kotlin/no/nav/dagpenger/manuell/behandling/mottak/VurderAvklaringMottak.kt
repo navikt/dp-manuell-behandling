@@ -28,7 +28,7 @@ internal class VurderAvklaringMottak(
         River(rapidsconnection)
             .apply {
                 precondition {
-                    validate { it.requireValue("@event_name", "NyAvklaring") }
+                    it.requireValue("@event_name", "NyAvklaring")
                 }
                 validate {
                     it.requireKey("@id", "@opprettet")
