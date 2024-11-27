@@ -9,6 +9,8 @@ spec:
   image: "{{image}}"
   port: 8080
   env:
+    - name: JDK_JAVA_OPTIONS
+      value: -XX:+UseParallelGC -XX:ActiveProcessorCount=4
     - name: KAFKA_RAPID_TOPIC
       value: teamdagpenger.rapid.v1
     - name: KAFKA_CONSUMER_GROUP_ID
@@ -22,8 +24,8 @@ spec:
     limits:
       memory: 512Mi
     requests:
-      cpu: 20m
-      memory: 256Mi
+      cpu: 12m
+      memory: 360Mi
   kafka:
     pool: "{{kafka.pool}}"
   accessPolicy:
