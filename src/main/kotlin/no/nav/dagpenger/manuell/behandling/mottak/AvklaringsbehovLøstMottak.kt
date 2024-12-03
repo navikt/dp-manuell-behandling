@@ -30,11 +30,11 @@ internal class AvklaringsbehovLøstMottak(
                 precondition {
                     it.requireValue("@event_name", "behov")
                     it.requireValue("@avklaringsbehov", true)
+                    it.requireKey("@løsning")
                     it.requireAllOrAny("@behov", muligeBehov)
                 }
                 validate {
                     it.requireKey("avklaringId", "@behovId", "behandlingId")
-                    it.requireKey("@løsning")
                     it.requireKey("ident")
                     it.requireKey("kode")
                     it.forbidValue("@final", true) // Ignorerer final behov fra behovsakkumulator
