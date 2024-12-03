@@ -1,10 +1,10 @@
 package no.nav.dagpenger.manuell.behandling
 
 import com.fasterxml.jackson.databind.JsonNode
-import java.util.UUID
 import no.nav.dagpenger.manuell.behandling.mottak.AvklaringsbehovLøstMottak
 import no.nav.dagpenger.manuell.behandling.mottak.NyAvklaringMottak
 import no.nav.helse.rapids_rivers.RapidApplication
+import java.util.UUID
 
 fun main() {
     val env = System.getenv()
