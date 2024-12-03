@@ -10,12 +10,7 @@ import io.micrometer.core.instrument.MeterRegistry
 import mu.KotlinLogging
 import mu.withLoggingContext
 import no.nav.dagpenger.manuell.behandling.asUUID
-import no.nav.dagpenger.manuell.behandling.avklaring.ArbeidIEØS
-import no.nav.dagpenger.manuell.behandling.avklaring.HattLukkedeSakerSiste8Uker
-import no.nav.dagpenger.manuell.behandling.avklaring.InntektNesteKalendermåned
-import no.nav.dagpenger.manuell.behandling.avklaring.JobbetUtenforNorge
-import no.nav.dagpenger.manuell.behandling.avklaring.MuligGjenopptak
-import no.nav.dagpenger.manuell.behandling.avklaring.SvangerskapsrelaterteSykepenger
+import no.nav.dagpenger.manuell.behandling.avklaring.Behov
 
 internal class NyAvklaringMottak(
     rapidsconnection: RapidsConnection,
@@ -49,14 +44,14 @@ internal class NyAvklaringMottak(
             "behandlingId" to packet["behandlingId"].asText(),
             "søknadId" to packet["søknadId"].asText(),
         ) {
-            val avklaring =
+            val behov =
                 when (avklaringKode) {
-                    "SvangerskapsrelaterteSykepenger" -> SvangerskapsrelaterteSykepenger(avklaringId)
-                    "EØSArbeid" -> ArbeidIEØS(avklaringId)
-                    "HattLukkedeSakerSiste8Uker" -> HattLukkedeSakerSiste8Uker(avklaringId)
-                    "MuligGjenopptak" -> MuligGjenopptak(avklaringId)
-                    "InntektNesteKalendermåned" -> InntektNesteKalendermåned(avklaringId)
-                    "JobbetUtenforNorge" -> JobbetUtenforNorge(avklaringId)
+                    "SvangerskapsrelaterteSykepenger" -> Behov.SykepengerSiste36Måneder
+                    "EØSArbeid" -> Behov.EØSArbeid
+                    "HattLukkedeSakerSiste8Uker" -> Behov.HarHattLukketSiste8Uker
+                    "MuligGjenopptak" -> Behov.HarHattDagpengerSiste13Mnd
+                    "InntektNesteKalendermåned" -> Behov.HarRapportertInntektNesteMåned
+                    "JobbetUtenforNorge" -> Behov.JobbetUtenforNorge
                     else -> {
                         // En avklaring som må håndteres av noen andre. En saksbehandler for eksempel
                         logger.info { "Avklaring med kode $avklaringKode er behandlet ikke her" }
@@ -65,14 +60,14 @@ internal class NyAvklaringMottak(
                 }
 
             packet["@event_name"] = "behov"
-            packet["@behov"] = listOf(avklaring.behov.name)
+            packet["@behov"] = listOf(behov.name)
             packet["@behovId"] = avklaringId
             packet["@avklaringsbehov"] = true
             packet.legacyParams().forEach { (nøkkel, verdi) ->
                 packet[nøkkel] = verdi
             }
 
-            logger.info { "Publiserer informasjonbehov med behov ${avklaring.behov.name} for avklaring $avklaringKode" }
+            logger.info { "Publiserer informasjonbehov med behov ${behov.name} for avklaring $avklaringKode" }
 
             context.publish(packet.toJson())
         }
