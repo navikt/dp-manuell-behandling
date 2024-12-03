@@ -4,8 +4,8 @@ import mu.KotlinLogging
 import no.nav.dagpenger.manuell.behandling.Metrikker.avklaringTeller
 import no.nav.dagpenger.manuell.behandling.Metrikker.avklaringTidBrukt
 import no.nav.dagpenger.manuell.behandling.avklaring.AvklaringBehandling
-import no.nav.dagpenger.manuell.behandling.avklaring.Utfall
 import no.nav.dagpenger.manuell.behandling.hendelse.ManuellBehandlingAvklaring
+import no.nav.dagpenger.manuell.behandling.mottak.Utfall
 import java.time.Duration
 import java.time.LocalDateTime
 import java.util.UUID

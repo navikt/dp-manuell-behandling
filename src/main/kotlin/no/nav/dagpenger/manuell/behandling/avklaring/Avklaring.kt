@@ -5,6 +5,7 @@ import no.nav.dagpenger.aktivitetslogg.Aktivitetskontekst
 import no.nav.dagpenger.aktivitetslogg.SpesifikkKontekst
 import no.nav.dagpenger.manuell.behandling.hendelse.LøstBehovHendelse
 import no.nav.dagpenger.manuell.behandling.hendelse.ManuellBehandlingAvklaring
+import no.nav.dagpenger.manuell.behandling.mottak.Utfall
 import java.util.UUID
 
 internal typealias AvklaringFactory = (UUID) -> Avklaring
@@ -44,10 +45,4 @@ internal class Avklaring(
                 behov = listOf(behov.name),
                 behovKontekst(manuellBehandlingAvklaring) + mapOf("avklaringId" to id.toString()),
             ).toJson()
-}
-
-internal enum class Utfall {
-    Manuell,
-    Automatisk,
-    IkkeVurdert,
 }

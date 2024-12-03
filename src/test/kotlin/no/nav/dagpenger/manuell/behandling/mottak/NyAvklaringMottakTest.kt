@@ -1,31 +1,30 @@
-package no.nav.dagpenger.manuell.behandling
+package no.nav.dagpenger.manuell.behandling.mottak
 
+import com.github.navikt.tbd_libs.rapids_and_rivers.JsonMessage
 import com.github.navikt.tbd_libs.rapids_and_rivers.test_support.TestRapid
+import com.github.navikt.tbd_libs.rapids_and_rivers_api.MessageProblems
+import io.kotest.matchers.doubles.shouldBeGreaterThan
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Exhaustive
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.boolean
 import io.kotest.property.exhaustive.collection
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import kotlinx.coroutines.runBlocking
 import no.nav.dagpenger.manuell.behandling.Metrikker.avklaringTeller
 import no.nav.dagpenger.manuell.behandling.avklaring.Behov
-import no.nav.dagpenger.manuell.behandling.mottak.InformasjonsbehovLøstMottak
-import no.nav.dagpenger.manuell.behandling.mottak.Utfall
-import no.nav.dagpenger.manuell.behandling.mottak.VurderAvklaringMottak
-import no.nav.dagpenger.manuell.behandling.repository.InMemoryAvklaringRepository
-import org.intellij.lang.annotations.Language
 import org.junit.jupiter.api.Test
 import java.util.UUID
+import kotlin.test.fail
 
-internal class VurderAvklaringMottakTest {
+internal class NyAvklaringMottakTest {
     private val testRapid = TestRapid()
 
-    private val avklaringRepository =
-        InMemoryAvklaringRepository().also {
-            VurderAvklaringMottak(testRapid, it)
-            InformasjonsbehovLøstMottak(testRapid, it)
-        }
+    init {
+        NyAvklaringMottak(testRapid)
+        AvklaringsbehovLøstMottak(testRapid)
+    }
 
     @Test
     fun `kan motta ny avklaring `() {
@@ -56,16 +55,22 @@ internal class VurderAvklaringMottakTest {
 
                 with(testRapid.inspektør) {
                     size shouldBe 1
-                    this.message(0).also {
-                        it["@event_name"].asText() shouldBe "behov"
-                        it["avklaringId"].asText() shouldBe avklaringId.toString()
-                        it["søknadId"].asText() shouldBe søknadId.toString()
-                        it["behandlingId"].asText() shouldBe behandlingId.toString()
-                        it["ident"].asText() shouldBe ident
-                    }
+                    val behov = this.message(0)
+                    behov["@event_name"].asText() shouldBe "behov"
+                    behov["avklaringId"].asText() shouldBe avklaringId.toString()
+                    behov["søknadId"].asText() shouldBe søknadId.toString()
+                    behov["behandlingId"].asText() shouldBe behandlingId.toString()
+                    behov["ident"].asText() shouldBe ident
+                    behov["identer"].shouldNotBeNull()
+                    behov["Virkningstidspunkt"].shouldNotBeNull()
+                    behov["søknad_uuid"].asText() shouldBe søknadId.toString()
+                    behov["@avklaringsbehov"].asBoolean() shouldBe true
+                    val løsning =
+                        behov.toString().let { JsonMessage(it, MessageProblems(it), SimpleMeterRegistry()) }.also {
+                            it["@løsning"] = mapOf(avklaringskode.second.name to utfall)
+                        }
+                    testRapid.sendTestMessage(løsning.toJson())
                 }
-
-                testRapid.sendTestMessage(informasjonsbehovLøst(avklaringId, avklaringskode.second.name, utfall))
 
                 val forventetUtfall = if (utfall) Utfall.Manuell else Utfall.Automatisk
 
@@ -85,52 +90,15 @@ internal class VurderAvklaringMottakTest {
                         }
                     }
 
-                    Utfall.IkkeVurdert -> TODO()
+                    Utfall.IkkeVurdert -> fail("Ikke implementert for $forventetUtfall")
                 }
                 testRapid.reset()
-                avklaringTeller.labelValues(avklaringskode.first, forventetUtfall.toString()).get() shouldBe 1.0
+                avklaringTeller.labelValues(avklaringskode.first, forventetUtfall.toString()).get() shouldBeGreaterThan 1.0
             }
         }
         // avklaringer * 2 utfall
         avklaringTeller.collect().dataPoints.size shouldBe koder.size * 2
     }
-
-    @Language("JSON")
-    private fun informasjonsbehovLøst(
-        uuid: UUID,
-        avklaringskode: String,
-        utfall: Boolean,
-    ) = """
-        {
-          "@event_name": "behov",
-          "@behovId": "353a1d0f-f82b-4ead-88d0-3340e51f24a7",
-          "@behov": [
-            "$avklaringskode"
-          ],
-          "Virkningstidspunkt": "2024-06-24",
-          "søknad_uuid": "4afce924-6cb4-4ab4-a92b-fe91e24f31bf",
-          "identer": [
-            {
-              "type": "folkeregisterident",
-              "historisk": false,
-              "id": "11109233444"
-            }
-          ],
-          "@løsning": {
-            "$avklaringskode": {"verdi": $utfall}
-          },
-          "avklaringId": "$uuid",
-          "@id": "737172d8-2207-4458-af43-5dab8a13d192",
-          "@opprettet": "2024-06-24T12:21:56.62289",
-          "system_read_count": 0,
-          "system_participating_services": [
-            {
-              "id": "737172d8-2207-4458-af43-5dab8a13d192",
-              "time": "2024-06-24T12:21:56.622890"
-            }
-          ]
-        }
-        """.trimIndent()
 
     private fun nyAvklaring(
         uuid: UUID,

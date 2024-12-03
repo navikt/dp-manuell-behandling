@@ -1,8 +1,8 @@
 package no.nav.dagpenger.manuell.behandling.repository
 
 import no.nav.dagpenger.manuell.behandling.avklaring.AvklaringBehandling
-import no.nav.dagpenger.manuell.behandling.avklaring.Utfall
 import no.nav.dagpenger.manuell.behandling.hendelse.ManuellBehandlingAvklaring
+import no.nav.dagpenger.manuell.behandling.mottak.Utfall
 import java.util.UUID
 
 internal interface AvklaringRepository {

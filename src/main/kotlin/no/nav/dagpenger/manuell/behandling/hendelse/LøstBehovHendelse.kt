@@ -1,7 +1,7 @@
 package no.nav.dagpenger.manuell.behandling.hendelse
 
 import no.nav.dagpenger.manuell.behandling.avklaring.Behov
-import no.nav.dagpenger.manuell.behandling.avklaring.Utfall
+import no.nav.dagpenger.manuell.behandling.mottak.Utfall
 import java.util.UUID
 
 internal class LøstBehovHendelse(

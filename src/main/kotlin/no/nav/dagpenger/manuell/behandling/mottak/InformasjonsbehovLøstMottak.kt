@@ -1,6 +1,5 @@
 package no.nav.dagpenger.manuell.behandling.mottak
 
-import com.fasterxml.jackson.databind.JsonNode
 import com.github.navikt.tbd_libs.rapids_and_rivers.JsonMessage
 import com.github.navikt.tbd_libs.rapids_and_rivers.River
 import com.github.navikt.tbd_libs.rapids_and_rivers_api.MessageContext
@@ -11,7 +10,6 @@ import mu.KotlinLogging
 import mu.withLoggingContext
 import no.nav.dagpenger.manuell.behandling.asUUID
 import no.nav.dagpenger.manuell.behandling.avklaring.Behov
-import no.nav.dagpenger.manuell.behandling.avklaring.Utfall
 import no.nav.dagpenger.manuell.behandling.repository.AvklaringRepository
 
 internal class InformasjonsbehovLøstMottak(
@@ -26,6 +24,7 @@ internal class InformasjonsbehovLøstMottak(
                 precondition {
                     it.requireValue("@event_name", "behov")
                     it.requireAllOrAny("@behov", muligeBehov)
+                    it.forbidValue("@avklaringbehov", true)
                 }
                 validate {
                     it.requireKey("avklaringId", "@behovId")
@@ -82,16 +81,3 @@ internal class InformasjonsbehovLøstMottak(
         private val sikkerlogg = KotlinLogging.logger("tjenestekall")
     }
 }
-
-private fun interface Løsningstolk {
-    fun tolk(løsning: JsonNode): Utfall
-}
-
-// En standard tolk som funker for det meste
-private val booleanLøsningstolk =
-    Løsningstolk { løsning ->
-        when (løsning.asBoolean()) {
-            true -> Utfall.Manuell
-            false -> Utfall.Automatisk
-        }
-    }

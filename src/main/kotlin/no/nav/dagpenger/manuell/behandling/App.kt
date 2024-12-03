@@ -1,11 +1,10 @@
 package no.nav.dagpenger.manuell.behandling
 
 import com.fasterxml.jackson.databind.JsonNode
-import no.nav.dagpenger.manuell.behandling.mottak.InformasjonsbehovLøstMottak
-import no.nav.dagpenger.manuell.behandling.mottak.VurderAvklaringMottak
-import no.nav.dagpenger.manuell.behandling.repository.InMemoryAvklaringRepository
-import no.nav.helse.rapids_rivers.RapidApplication
 import java.util.UUID
+import no.nav.dagpenger.manuell.behandling.mottak.AvklaringsbehovLøstMottak
+import no.nav.dagpenger.manuell.behandling.mottak.NyAvklaringMottak
+import no.nav.helse.rapids_rivers.RapidApplication
 
 fun main() {
     val env = System.getenv()
@@ -13,9 +12,9 @@ fun main() {
     RapidApplication
         .create(env)
         .apply {
-            val repository = InMemoryAvklaringRepository()
-            VurderAvklaringMottak(this, repository)
-            InformasjonsbehovLøstMottak(this, repository)
+            // Tilstandsløs håndtering av avklaring
+            NyAvklaringMottak(this)
+            AvklaringsbehovLøstMottak(this)
         }.start()
 }
 
