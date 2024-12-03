@@ -31,13 +31,13 @@ internal class AvklaringsbehovLøstMottak(
                     it.requireValue("@event_name", "behov")
                     it.requireValue("@avklaringsbehov", true)
                     it.requireKey("@løsning")
+                    it.forbidValue("@final", true) // Ignorerer final behov fra behovsakkumulator
                     it.requireAllOrAny("@behov", muligeBehov)
                 }
                 validate {
                     it.requireKey("avklaringId", "@behovId", "behandlingId")
                     it.requireKey("ident")
                     it.requireKey("kode")
-                    it.forbidValue("@final", true) // Ignorerer final behov fra behovsakkumulator
                     it.interestedIn("@id", "@opprettet")
                 }
             }.register(this)
