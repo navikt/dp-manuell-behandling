@@ -62,8 +62,7 @@ internal class AvklaringsbehovLøstMottak(
                 logger.info { "Mottok løsning på behov: $behov" }
                 sikkerlogg.info { "Mottok løsning på behov: $behov. Pakke: ${packet.toJson()}" }
                 behov.forEach { behov ->
-                    val svar = packet.svar(behov)
-                    val utfall = svar.utfall(behov)
+                    val utfall = packet.utfall(behov)
                     if (utfall == Utfall.Automatisk) {
                         context.publish(
                             ident,
@@ -99,6 +98,17 @@ internal class AvklaringsbehovLøstMottak(
         avklaringTidBrukt.labelValues(kode).observe(tidBrukt.toMillis().toDouble())
     }
 
+    private fun JsonMessage.utfall(behov: Behov): Utfall {
+        return this.svar(behov).utfall(behov)
+    }
+
+    private fun JsonMessage.svar(behov: Behov): JsonNode =
+        if (this["@løsning"][behov.name].isBoolean) {
+            this["@løsning"][behov.name]
+        } else {
+            this["@løsning"][behov.name]["verdi"]
+        }
+
     private fun JsonNode.utfall(behov: Behov): Utfall =
         when (behov) {
             Behov.EØSArbeid -> booleanLøsningstolk.tolk(this)
@@ -107,13 +117,6 @@ internal class AvklaringsbehovLøstMottak(
             Behov.HarRapportertInntektNesteMåned -> booleanLøsningstolk.tolk(this)
             Behov.JobbetUtenforNorge -> booleanLøsningstolk.tolk(this)
             Behov.SykepengerSiste36Måneder -> booleanLøsningstolk.tolk(this)
-        }
-
-    private fun JsonMessage.svar(behov: Behov): JsonNode =
-        if (this["@løsning"][behov.name].isBoolean) {
-            this["@løsning"][behov.name]
-        } else {
-            this["@løsning"][behov.name]["verdi"]
         }
 
     override fun onError(
