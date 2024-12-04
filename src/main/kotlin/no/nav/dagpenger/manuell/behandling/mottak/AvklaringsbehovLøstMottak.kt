@@ -64,7 +64,6 @@ internal class AvklaringsbehovLøstMottak(
                 behov.forEach { behov ->
                     val svar = packet.svar(behov)
                     val utfall = svar.utfall(behov)
-                    logger.info { "Avklaring med id=$avklaringId, kode=$kode løst med utfall=$utfall" }
                     if (utfall == Utfall.Automatisk) {
                         context.publish(
                             ident,
@@ -79,15 +78,25 @@ internal class AvklaringsbehovLøstMottak(
                     } else {
                         logger.info { "Avklaring $kode må sjekkes, har tilstand $utfall" }
                     }
-                    avklaringTeller.labelValues(kode, utfall.name).inc()
-                    val tidBrukt = Duration.between(packet["@opprettet"].asLocalDateTime(), LocalDateTime.now())
-                    avklaringTidBrukt.labelValues(kode).observe(tidBrukt.toMillis().toDouble())
+                    loggAvklaring(avklaringId, kode, utfall, packet)
                 }
             } catch (e: Exception) {
                 sikkerlogg.error(e) { "Feil ved mottak av løsning. Packet=${packet.toJson()}" }
                 throw e
             }
         }
+    }
+
+    private fun loggAvklaring(
+        avklaringId: UUID,
+        kode: String?,
+        utfall: Utfall,
+        packet: JsonMessage,
+    ) {
+        logger.info { "Avklaring med id=$avklaringId, kode=$kode løst med utfall=$utfall" }
+        avklaringTeller.labelValues(kode, utfall.name).inc()
+        val tidBrukt = Duration.between(packet["@opprettet"].asLocalDateTime(), LocalDateTime.now())
+        avklaringTidBrukt.labelValues(kode).observe(tidBrukt.toMillis().toDouble())
     }
 
     private fun JsonNode.utfall(behov: Behov): Utfall =
