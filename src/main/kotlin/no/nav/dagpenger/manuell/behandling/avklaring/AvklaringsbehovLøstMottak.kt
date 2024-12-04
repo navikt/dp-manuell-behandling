@@ -1,4 +1,4 @@
-package no.nav.dagpenger.manuell.behandling.mottak
+package no.nav.dagpenger.manuell.behandling.avklaring
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.github.navikt.tbd_libs.rapids_and_rivers.JsonMessage
@@ -14,7 +14,6 @@ import mu.withLoggingContext
 import no.nav.dagpenger.manuell.behandling.Metrikker.avklaringTeller
 import no.nav.dagpenger.manuell.behandling.Metrikker.avklaringTidBrukt
 import no.nav.dagpenger.manuell.behandling.asUUID
-import no.nav.dagpenger.manuell.behandling.avklaring.Behov
 import java.time.Duration
 import java.time.LocalDateTime
 import java.util.UUID

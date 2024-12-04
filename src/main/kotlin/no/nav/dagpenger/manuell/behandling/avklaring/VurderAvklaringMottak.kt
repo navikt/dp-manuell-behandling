@@ -1,4 +1,4 @@
-package no.nav.dagpenger.manuell.behandling.mottak
+package no.nav.dagpenger.manuell.behandling.avklaring
 
 import com.github.navikt.tbd_libs.rapids_and_rivers.JsonMessage
 import com.github.navikt.tbd_libs.rapids_and_rivers.River
@@ -10,9 +10,8 @@ import io.micrometer.core.instrument.MeterRegistry
 import mu.KotlinLogging
 import mu.withLoggingContext
 import no.nav.dagpenger.manuell.behandling.asUUID
-import no.nav.dagpenger.manuell.behandling.avklaring.Behov
 
-internal class NyAvklaringMottak(
+internal class VurderAvklaringMottak(
     rapidsconnection: RapidsConnection,
 ) : River.PacketListener {
     init {
@@ -44,20 +43,12 @@ internal class NyAvklaringMottak(
             "behandlingId" to packet["behandlingId"].asText(),
             "søknadId" to packet["søknadId"].asText(),
         ) {
-            val behov =
-                when (avklaringKode) {
-                    "SvangerskapsrelaterteSykepenger" -> Behov.SykepengerSiste36Måneder
-                    "EØSArbeid" -> Behov.EØSArbeid
-                    "HattLukkedeSakerSiste8Uker" -> Behov.HarHattLukketSiste8Uker
-                    "MuligGjenopptak" -> Behov.HarHattDagpengerSiste13Mnd
-                    "InntektNesteKalendermåned" -> Behov.HarRapportertInntektNesteMåned
-                    "JobbetUtenforNorge" -> Behov.JobbetUtenforNorge
-                    else -> {
-                        // En avklaring som må håndteres av noen andre. En saksbehandler for eksempel
-                        logger.info { "Avklaring med kode $avklaringKode er behandlet ikke her" }
-                        return
-                    }
-                }
+            val behov = avklaringerTilBehovRegister[avklaringKode]
+            if (behov == null) {
+                // En avklaring som må håndteres av noen andre. En saksbehandler for eksempel
+                logger.info { "Avklaring med kode $avklaringKode er ikke behandlet" }
+                return
+            }
 
             packet["@event_name"] = "behov"
             packet["@behov"] = listOf(behov.name)

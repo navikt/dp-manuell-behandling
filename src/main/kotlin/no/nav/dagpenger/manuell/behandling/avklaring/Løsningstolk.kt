@@ -1,4 +1,4 @@
-package no.nav.dagpenger.manuell.behandling.mottak
+package no.nav.dagpenger.manuell.behandling.avklaring
 
 import com.fasterxml.jackson.databind.JsonNode
 

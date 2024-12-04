@@ -1,8 +1,8 @@
 package no.nav.dagpenger.manuell.behandling
 
 import com.fasterxml.jackson.databind.JsonNode
-import no.nav.dagpenger.manuell.behandling.mottak.AvklaringsbehovLøstMottak
-import no.nav.dagpenger.manuell.behandling.mottak.NyAvklaringMottak
+import no.nav.dagpenger.manuell.behandling.avklaring.AvklaringsbehovLøstMottak
+import no.nav.dagpenger.manuell.behandling.avklaring.VurderAvklaringMottak
 import no.nav.helse.rapids_rivers.RapidApplication
 import java.util.UUID
 
@@ -12,8 +12,7 @@ fun main() {
     RapidApplication
         .create(env)
         .apply {
-            // Tilstandsløs håndtering av avklaring
-            NyAvklaringMottak(this)
+            VurderAvklaringMottak(this)
             AvklaringsbehovLøstMottak(this)
         }.start()
 }
