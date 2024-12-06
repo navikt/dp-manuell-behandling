@@ -53,9 +53,11 @@ internal class AvklaringsbehovLøstMottak(
         val kode = packet["kode"].asText()
         val behandlingId = packet["behandlingId"].asText()
         val behov = packet["@behov"].map { it.asText() }.map { Behov.valueOf(it) }
+
         withLoggingContext(
             "behovId" to packet["@behovId"].asUUID().toString(),
             "avklaringId" to avklaringId.toString(),
+            "behandlingId" to behandlingId,
         ) {
             try {
                 logger.info { "Mottok løsning på behov: $behov" }
@@ -75,6 +77,18 @@ internal class AvklaringsbehovLøstMottak(
                         logger.info { "Publisert AvklaringIkkeRelevant for avklaring $kode" }
                     } else {
                         logger.info { "Avklaring $kode må sjekkes, har tilstand $utfall" }
+
+                        if (kode == "EØSArbeid") {
+                            logger.info { "Behandlinger med EØSArbeid og utfall=$utfall skal tas manuelt Arena" }
+                            context.publish(
+                                ident,
+                                AvbrytBehandling(
+                                    behandlingId,
+                                    ident,
+                                    "Avklaringen $kode sier saken må løses manuelt i Arena",
+                                ).toJson(),
+                            )
+                        }
                     }
                     loggAvklaring(avklaringId, kode, utfall, packet)
                 }
@@ -97,9 +111,7 @@ internal class AvklaringsbehovLøstMottak(
         avklaringTidBrukt.labelValues(kode).observe(tidBrukt.toMillis().toDouble())
     }
 
-    private fun JsonMessage.utfall(behov: Behov): Utfall {
-        return this.svar(behov).utfall(behov)
-    }
+    private fun JsonMessage.utfall(behov: Behov): Utfall = this.svar(behov).utfall(behov)
 
     private fun JsonMessage.svar(behov: Behov): JsonNode =
         if (this["@løsning"][behov.name].isBoolean) {
@@ -122,9 +134,7 @@ internal class AvklaringsbehovLøstMottak(
         problems: MessageProblems,
         context: MessageContext,
         metadata: MessageMetadata,
-    ) {
-        throw IllegalStateException("Forventer ikke feil her ${problems.toExtendedReport()}")
-    }
+    ): Unit = throw IllegalStateException("Forventer ikke feil her ${problems.toExtendedReport()}")
 
     private data class AvklaringIkkeRelevant(
         val avklaringId: UUID,
@@ -141,6 +151,23 @@ internal class AvklaringsbehovLøstMottak(
                         "kode" to kode,
                         "behandlingId" to behandlingId,
                         "ident" to ident,
+                    ),
+                ).toJson()
+    }
+
+    private data class AvbrytBehandling(
+        val behandlingId: String,
+        val ident: String,
+        val årsak: String,
+    ) {
+        fun toJson() =
+            JsonMessage
+                .newMessage(
+                    "avbryt_behandling",
+                    mutableMapOf(
+                        "behandlingId" to behandlingId,
+                        "ident" to ident,
+                        "årsak" to årsak,
                     ),
                 ).toJson()
     }

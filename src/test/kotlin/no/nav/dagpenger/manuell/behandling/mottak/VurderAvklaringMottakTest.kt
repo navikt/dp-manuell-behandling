@@ -76,8 +76,9 @@ internal class VurderAvklaringMottakTest {
 
                 val forventetUtfall = if (utfall) Utfall.Manuell else Utfall.Automatisk
 
+                val antallMeldinger = if (avklaringskode.first == "EØSArbeid") 2 else 1
                 when (forventetUtfall) {
-                    Utfall.Manuell -> testRapid.inspektør.size shouldBe 1
+                    Utfall.Manuell -> testRapid.inspektør.size shouldBe antallMeldinger
                     Utfall.Automatisk -> {
                         with(testRapid.inspektør) {
                             size shouldBe 2
