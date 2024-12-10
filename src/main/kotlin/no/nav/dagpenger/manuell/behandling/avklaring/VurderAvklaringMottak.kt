@@ -54,29 +54,13 @@ internal class VurderAvklaringMottak(
             packet["@behov"] = listOf(behov.name)
             packet["@behovId"] = avklaringId
             packet["@avklaringsbehov"] = true
-            packet.legacyParams().forEach { (nøkkel, verdi) ->
-                packet[nøkkel] = verdi
-            }
+            packet["Virkningstidspunkt"] = packet["@opprettet"].asLocalDateTime().toLocalDate()
 
             logger.info { "Publiserer informasjonbehov med behov ${behov.name} for avklaring $avklaringKode" }
 
             context.publish(packet.toJson())
         }
     }
-
-    private fun JsonMessage.legacyParams() =
-        mapOf(
-            "Virkningstidspunkt" to this["@opprettet"].asLocalDateTime().toLocalDate(),
-            "søknad_uuid" to this["søknadId"].asUUID(),
-            "identer" to
-                listOf(
-                    mapOf(
-                        "type" to "folkeregisterident",
-                        "historisk" to false,
-                        "id" to this["ident"].asText(),
-                    ),
-                ),
-        )
 
     private companion object {
         private val logger = KotlinLogging.logger { }

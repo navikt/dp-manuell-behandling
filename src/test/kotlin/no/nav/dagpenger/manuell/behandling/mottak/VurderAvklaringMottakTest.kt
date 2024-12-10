@@ -63,9 +63,7 @@ internal class VurderAvklaringMottakTest {
                     behov["søknadId"].asText() shouldBe søknadId.toString()
                     behov["behandlingId"].asText() shouldBe behandlingId.toString()
                     behov["ident"].asText() shouldBe ident
-                    behov["identer"].shouldNotBeNull()
                     behov["Virkningstidspunkt"].shouldNotBeNull()
-                    behov["søknad_uuid"].asText() shouldBe søknadId.toString()
                     behov["@avklaringsbehov"].asBoolean() shouldBe true
                     val løsning =
                         behov.toString().let { JsonMessage(it, MessageProblems(it), SimpleMeterRegistry()) }.also {
