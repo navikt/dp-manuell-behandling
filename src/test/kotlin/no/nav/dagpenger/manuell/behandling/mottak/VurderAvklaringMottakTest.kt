@@ -3,6 +3,7 @@ package no.nav.dagpenger.manuell.behandling.mottak
 import com.github.navikt.tbd_libs.rapids_and_rivers.JsonMessage
 import com.github.navikt.tbd_libs.rapids_and_rivers.test_support.TestRapid
 import com.github.navikt.tbd_libs.rapids_and_rivers_api.MessageProblems
+import io.kotest.assertions.withClue
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Exhaustive
@@ -56,7 +57,7 @@ internal class VurderAvklaringMottakTest {
                 )
 
                 with(testRapid.inspektør) {
-                    size shouldBe 1
+                    withClue("Skal ha mottatt en melding for ${avklaringskode.first}") { size shouldBe 1 }
                     val behov = this.message(0)
                     behov["@event_name"].asText() shouldBe "behov"
                     behov["avklaringId"].asText() shouldBe avklaringId.toString()

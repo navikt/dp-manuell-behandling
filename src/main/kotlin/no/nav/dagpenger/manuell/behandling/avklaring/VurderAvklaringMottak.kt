@@ -19,6 +19,7 @@ internal class VurderAvklaringMottak(
             .apply {
                 precondition {
                     it.requireValue("@event_name", "NyAvklaring")
+                    it.requireAny("kode", avklaringerTilBehovRegister.keys.toList())
                 }
                 validate {
                     it.requireKey("@id", "@opprettet")
