@@ -57,7 +57,7 @@ internal class VurderAvklaringMottak(
             packet["Virkningstidspunkt"] = packet["@opprettet"].asLocalDateTime().toLocalDate()
 
             logger.info { "Publiserer informasjonbehov med behov ${behov.name} for avklaring $avklaringKode" }
-            sikkerLogg.info { "Publiserer informasjonbehov med behov ${behov.name} behov ${packet.toJson()}" }
+            sikkerLogg.info { "Publiserer informasjonbehov med behov ${behov.name} på nøkkel ${metadata.key} behov ${packet.toJson()} " }
 
             context.publish(packet.toJson())
         }
