@@ -57,6 +57,7 @@ internal class VurderAvklaringMottak(
             packet["Virkningstidspunkt"] = packet["@opprettet"].asLocalDateTime().toLocalDate()
 
             logger.info { "Publiserer informasjonbehov med behov ${behov.name} for avklaring $avklaringKode" }
+            sikkerLogg.info { "Publiserer informasjonbehov med behov ${behov.name} behov ${packet.toJson()}" }
 
             context.publish(packet.toJson())
         }
@@ -64,5 +65,6 @@ internal class VurderAvklaringMottak(
 
     private companion object {
         private val logger = KotlinLogging.logger { }
+        private val sikkerLogg = KotlinLogging.logger("tjenestekall.VurderAvklaringMottak")
     }
 }
