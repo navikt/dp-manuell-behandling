@@ -39,6 +39,7 @@ internal class VurderAvklaringMottakTest {
                 Pair("MuligGjenopptak", Behov.HarHattDagpengerSiste13Mnd),
                 Pair("InntektNesteKalendermåned", Behov.HarRapportertInntektNesteMåned),
                 Pair("JobbetUtenforNorge", Behov.JobbetUtenforNorge),
+                Pair("HarTilleggsopplysninger", Behov.HarTilleggsopplysninger),
             )
         runBlocking {
             checkAll(Exhaustive.collection(koder), Exhaustive.boolean()) { avklaringskode, utfall ->

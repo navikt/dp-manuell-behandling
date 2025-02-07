@@ -5,6 +5,7 @@ Dette er opplysninger som blir innhentet som en del av sjekk på avklaringer. De
 |Avklaring|Behov|
 |---|---|
 |EØSArbeid | EØSArbeid|
+|HarTilleggsopplysninger | HarTilleggsopplysninger|
 |HattLukkedeSakerSiste8Uker | HarHattLukketSiste8Uker|
 |InntektNesteKalendermåned | HarRapportertInntektNesteMåned|
 |JobbetUtenforNorge | JobbetUtenforNorge|

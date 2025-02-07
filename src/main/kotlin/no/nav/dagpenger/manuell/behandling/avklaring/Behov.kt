@@ -9,4 +9,5 @@ enum class Behov : Behov.Behovtype {
     HarRapportertInntektNesteMåned,
     SykepengerSiste36Måneder,
     HarHattDagpengerSiste13Mnd, // Mulig gjenopptak
+    HarTilleggsopplysninger,
 }

@@ -128,6 +128,7 @@ internal class AvklaringsbehovLøstMottak(
             Behov.HarRapportertInntektNesteMåned -> booleanLøsningstolk.tolk(this)
             Behov.JobbetUtenforNorge -> booleanLøsningstolk.tolk(this)
             Behov.SykepengerSiste36Måneder -> booleanLøsningstolk.tolk(this)
+            Behov.HarTilleggsopplysninger -> booleanLøsningstolk.tolk(this)
         }
 
     override fun onError(
