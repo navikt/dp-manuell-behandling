@@ -18,8 +18,8 @@ spec:
   envFrom:
     - secret: dp-manuell-behandling-unleash-api-token
   replicas:
-    min: 1
-    max: 1
+    min: 2
+    max: 2
   resources:
     limits:
       memory: 512Mi
