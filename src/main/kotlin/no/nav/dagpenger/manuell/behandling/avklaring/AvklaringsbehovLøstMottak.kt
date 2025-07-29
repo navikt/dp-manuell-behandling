@@ -127,7 +127,6 @@ internal class AvklaringsbehovLøstMottak(
             Behov.HarHattLukketSiste8Uker -> booleanLøsningstolk.tolk(this)
             Behov.HarRapportertInntektNesteMåned -> booleanLøsningstolk.tolk(this)
             Behov.JobbetUtenforNorge -> booleanLøsningstolk.tolk(this)
-            Behov.SykepengerSiste36Måneder -> booleanLøsningstolk.tolk(this)
             Behov.HarTilleggsopplysninger -> booleanLøsningstolk.tolk(this)
         }
 

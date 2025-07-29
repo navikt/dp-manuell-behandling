@@ -33,7 +33,6 @@ internal class VurderAvklaringMottakTest {
     fun `kan motta ny avklaring `() {
         val koder =
             listOf(
-                Pair("SvangerskapsrelaterteSykepenger", Behov.SykepengerSiste36Måneder),
                 Pair("EØSArbeid", Behov.EØSArbeid),
                 Pair("HattLukkedeSakerSiste8Uker", Behov.HarHattLukketSiste8Uker),
                 Pair("MuligGjenopptak", Behov.HarHattDagpengerSiste13Mnd),

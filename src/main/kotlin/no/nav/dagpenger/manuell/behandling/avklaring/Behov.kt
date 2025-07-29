@@ -7,7 +7,6 @@ enum class Behov : Behov.Behovtype {
     JobbetUtenforNorge,
     HarHattLukketSiste8Uker,
     HarRapportertInntektNesteMåned,
-    SykepengerSiste36Måneder,
     HarHattDagpengerSiste13Mnd, // Mulig gjenopptak
     HarTilleggsopplysninger,
 }

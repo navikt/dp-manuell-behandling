@@ -10,4 +10,3 @@ Dette er opplysninger som blir innhentet som en del av sjekk på avklaringer. De
 |InntektNesteKalendermåned | HarRapportertInntektNesteMåned|
 |JobbetUtenforNorge | JobbetUtenforNorge|
 |MuligGjenopptak | HarHattDagpengerSiste13Mnd|
-|SvangerskapsrelaterteSykepenger | SykepengerSiste36Måneder|
