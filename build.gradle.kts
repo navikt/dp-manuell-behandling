@@ -28,7 +28,7 @@ dependencies {
     implementation(libs.konfig)
 
     implementation("io.getunleash:unleash-client-java:11.1.0")
-    implementation("io.prometheus:prometheus-metrics-core:1.3.10")
+    implementation("io.prometheus:prometheus-metrics-core:1.4.1")
 
     testImplementation(kotlin("test"))
     testImplementation(libs.mockk)
