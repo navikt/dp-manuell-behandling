@@ -10,7 +10,6 @@ import io.kotest.property.Exhaustive
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.boolean
 import io.kotest.property.exhaustive.collection
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import kotlinx.coroutines.runBlocking
 import no.nav.dagpenger.manuell.behandling.Metrikker.avklaringTeller
 import no.nav.dagpenger.manuell.behandling.avklaring.AvklaringsbehovLøstMottak
@@ -67,7 +66,7 @@ internal class VurderAvklaringMottakTest {
                     behov["Virkningstidspunkt"].shouldNotBeNull()
                     behov["@avklaringsbehov"].asBoolean() shouldBe true
                     val løsning =
-                        behov.toString().let { JsonMessage(it, MessageProblems(it), SimpleMeterRegistry()) }.also {
+                        behov.toString().let { JsonMessage(it, MessageProblems(it)) }.also {
                             it["@løsning"] = mapOf(avklaringskode.second.name to utfall)
                         }
                     testRapid.sendTestMessage(løsning.toJson())
