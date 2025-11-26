@@ -4,14 +4,35 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"    
+      interval: "daily"
+      time: "10:05"
+      timezone: "Europe/Oslo"
+    cooldown:
+      default-days: 7
   # Maintain dependencies for gradle
   - package-ecosystem: "gradle"
     directory: "/"
     schedule:
-      interval: "daily"    
+      interval: "daily"
+      time: "10:05"
+      timezone: "Europe/Oslo"
+    cooldown:
+      default-days: 7
   # Maintain dependencies for docker
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
-      interval: "daily"   
+      interval: "daily"
+      time: "10:05"
+      timezone: "Europe/Oslo"
+    cooldown:
+      default-days: 7
+  # Maintain dependencies for npm
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "10:05"
+      timezone: "Europe/Oslo"
+    cooldown:
+      default-days: 7
