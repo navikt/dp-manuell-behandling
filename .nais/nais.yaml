@@ -30,6 +30,9 @@ spec:
     pool: "{{kafka.pool}}"
   accessPolicy:
     outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
       external:
         - host: teamdagpenger-unleash-api.nav.cloud.nais.io
   secureLogs:
