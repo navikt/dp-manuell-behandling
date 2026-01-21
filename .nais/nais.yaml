@@ -15,8 +15,6 @@ spec:
       value: teamdagpenger.rapid.v1
     - name: KAFKA_CONSUMER_GROUP_ID
       value: dp-manuell-behandling-v1
-  envFrom:
-    - secret: dp-manuell-behandling-unleash-api-token
   replicas:
     min: 2
     max: 2
@@ -33,8 +31,6 @@ spec:
       rules:
         - application: logging
           namespace: nais-system
-      external:
-        - host: teamdagpenger-unleash-api.nav.cloud.nais.io
   secureLogs:
     enabled: true
   prometheus:
