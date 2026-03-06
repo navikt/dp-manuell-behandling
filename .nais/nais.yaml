@@ -31,8 +31,6 @@ spec:
       rules:
         - application: logging
           namespace: nais-system
-  secureLogs:
-    enabled: true
   prometheus:
     enabled: true
     path: /metrics
