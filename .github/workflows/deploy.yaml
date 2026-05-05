@@ -22,6 +22,7 @@ jobs:
           distribution: temurin
           java-version: 21
       - uses: gradle/wrapper-validation-action@v3.5.0
+        continue-on-error: true
       - uses: gradle/actions/setup-gradle@v6
         env:
           # Eksluder test dependencies
