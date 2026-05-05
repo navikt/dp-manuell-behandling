@@ -27,7 +27,7 @@ dependencies {
     implementation(libs.kotlin.logging)
     implementation(libs.konfig)
 
-    implementation("io.prometheus:prometheus-metrics-core:1.6.0")
+    implementation("io.prometheus:prometheus-metrics-core:1.6.1")
 
     testImplementation(kotlin("test"))
     testImplementation(libs.mockk)
