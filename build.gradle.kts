@@ -33,7 +33,7 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.rapids.and.rivers.test)
     testImplementation(libs.kotest.assertions.core)
-    testImplementation("com.approvaltests:approvaltests:30.1.0")
+    testImplementation("com.approvaltests:approvaltests:30.1.1")
     testImplementation("io.kotest:kotest-property:${libs.versions.kotest.get()}")
 }
 
