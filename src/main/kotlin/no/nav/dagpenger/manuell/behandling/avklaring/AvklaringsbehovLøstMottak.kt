@@ -1,6 +1,5 @@
 package no.nav.dagpenger.manuell.behandling.avklaring
 
-import com.fasterxml.jackson.databind.JsonNode
 import com.github.navikt.tbd_libs.rapids_and_rivers.JsonMessage
 import com.github.navikt.tbd_libs.rapids_and_rivers.River
 import com.github.navikt.tbd_libs.rapids_and_rivers.asLocalDateTime
@@ -14,6 +13,7 @@ import io.micrometer.core.instrument.MeterRegistry
 import no.nav.dagpenger.manuell.behandling.Metrikker.avklaringTeller
 import no.nav.dagpenger.manuell.behandling.Metrikker.avklaringTidBrukt
 import no.nav.dagpenger.manuell.behandling.asUUID
+import tools.jackson.databind.JsonNode
 import java.time.Duration
 import java.time.LocalDateTime
 import java.util.UUID
@@ -52,7 +52,7 @@ internal class AvklaringsbehovLøstMottak(
         val ident = packet["ident"].asText()
         val kode = packet["kode"].asText()
         val behandlingId = packet["behandlingId"].asText()
-        val behov = packet["@behov"].map { it.asText() }.map { Behov.valueOf(it) }
+        val behov = packet["@behov"].toList().map { it.asText() }.map { Behov.valueOf(it) }
 
         withLoggingContext(
             "behovId" to packet["@behovId"].asUUID().toString(),

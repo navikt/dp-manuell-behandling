@@ -1,6 +1,6 @@
 package no.nav.dagpenger.manuell.behandling.avklaring
 
-import com.fasterxml.jackson.databind.JsonNode
+import tools.jackson.databind.JsonNode
 
 fun interface Løsningstolk {
     fun tolk(løsning: JsonNode): Utfall
