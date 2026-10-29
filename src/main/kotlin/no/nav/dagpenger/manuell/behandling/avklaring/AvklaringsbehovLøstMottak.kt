@@ -49,10 +49,10 @@ internal class AvklaringsbehovLøstMottak(
         meterRegistry: MeterRegistry,
     ) {
         val avklaringId = packet["avklaringId"].asUUID()
-        val ident = packet["ident"].asText()
-        val kode = packet["kode"].asText()
-        val behandlingId = packet["behandlingId"].asText()
-        val behov = packet["@behov"].toList().map { it.asText() }.map { Behov.valueOf(it) }
+        val ident = packet["ident"].asString()
+        val kode = packet["kode"].asString()
+        val behandlingId = packet["behandlingId"].asString()
+        val behov = packet["@behov"].toList().map { it.asString() }.map { Behov.valueOf(it) }
 
         withLoggingContext(
             "behovId" to packet["@behovId"].asUUID().toString(),

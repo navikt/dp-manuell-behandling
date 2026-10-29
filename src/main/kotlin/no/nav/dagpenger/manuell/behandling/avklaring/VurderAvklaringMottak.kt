@@ -35,14 +35,14 @@ internal class VurderAvklaringMottak(
         metadata: MessageMetadata,
         meterRegistry: MeterRegistry,
     ) {
-        val avklaringKode = packet["kode"].asText()
+        val avklaringKode = packet["kode"].asString()
         val avklaringId = packet["avklaringId"].asUUID()
 
         withLoggingContext(
             "avklaringId" to avklaringId.toString(),
             "kode" to avklaringKode,
-            "behandlingId" to packet["behandlingId"].asText(),
-            "søknadId" to packet["søknadId"].asText(),
+            "behandlingId" to packet["behandlingId"].asString(),
+            "søknadId" to packet["søknadId"].asString(),
         ) {
             val behov = avklaringerTilBehovRegister[avklaringKode]
             if (behov == null) {

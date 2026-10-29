@@ -58,11 +58,11 @@ internal class VurderAvklaringMottakTest {
                 with(testRapid.inspektør) {
                     withClue("Skal ha mottatt en melding for ${avklaringskode.first}") { size shouldBe 1 }
                     val behov = this.message(0)
-                    behov["@event_name"].asText() shouldBe "behov"
-                    behov["avklaringId"].asText() shouldBe avklaringId.toString()
-                    behov["søknadId"].asText() shouldBe søknadId.toString()
-                    behov["behandlingId"].asText() shouldBe behandlingId.toString()
-                    behov["ident"].asText() shouldBe ident
+                    behov["@event_name"].asString() shouldBe "behov"
+                    behov["avklaringId"].asString() shouldBe avklaringId.toString()
+                    behov["søknadId"].asString() shouldBe søknadId.toString()
+                    behov["behandlingId"].asString() shouldBe behandlingId.toString()
+                    behov["ident"].asString() shouldBe ident
                     behov["Virkningstidspunkt"].shouldNotBeNull()
                     behov["@avklaringsbehov"].asBoolean() shouldBe true
                     val løsning =
@@ -82,8 +82,8 @@ internal class VurderAvklaringMottakTest {
                             size shouldBe 2
                             this.key(1) shouldBe ident
                             this.message(1).also {
-                                it["@event_name"].asText() shouldBe "AvklaringIkkeRelevant"
-                                it["avklaringId"].asText() shouldBe avklaringId.toString()
+                                it["@event_name"].asString() shouldBe "AvklaringIkkeRelevant"
+                                it["avklaringId"].asString() shouldBe avklaringId.toString()
                                 it["ident"].shouldNotBeNull()
                                 it["kode"].shouldNotBeNull()
                                 it["behandlingId"].shouldNotBeNull()
